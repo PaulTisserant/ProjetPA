@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -W -Wall -ansi -std=c99
-LDFLAGS = `sdl2-config --cflags --libs`
+LDFLAGS = `sdl2-config --cflags --libs` -lm
 EXEC = main
 all: $(EXEC)
 main: fonctions_fichiers.o main.o
