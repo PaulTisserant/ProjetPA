@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 #include "fonctions_fichiers.h"
 
 
@@ -80,6 +81,7 @@ int main(){
     SDL_Rect SrcR_arrow;
     SDL_Rect DestR_arrow;   
     displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
+    
 
     // Boucle principale
     while(!terminer){
@@ -91,8 +93,17 @@ int main(){
         int posx = 0 ;
         int posy = 0;
         long double angle =0;
-        SDL_GetMouseState(&posx,&posy);
-        display_arrow(&SrcR_arrow,&DestR_arrow,&DestR_ball, posx, posy,&angle);
+
+        Uint64 currentTick = SDL_GetPerformanceCounter();
+        Uint64 lastTick = 0;
+        double deltaTime = 0;
+
+
+        lastTick = currentTick;
+        currentTick = SDL_GetPerformanceCounter();
+        deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
+        
+
 
 
 
@@ -116,8 +127,6 @@ int main(){
         
         SDL_PollEvent( &evenements );
 
-
-        
         
         
         switch(evenements.type)
@@ -134,25 +143,37 @@ int main(){
                     break; 
                     
                     case SDLK_SPACE:
-                        printf("enfoncée");
+                        //printf("enfoncée");
                         power += 1;
-                       
-                        DestR_ball.x += 10 * cos(angle);
-                        DestR_ball.y += 10 * sin(angle);
-                    break; 
-                        
+                    break;     
                 }
             break;
             case SDL_KEYUP:
+
+                switch(evenements.key.keysym.sym) {
+
                     case SDLK_SPACE:
-                        printf("relachée");
-                        printf("%d",power);
+                        //printf("relaché");
+                        printf("power %d \n", power);  
+                        printf("time %f", deltaTime);
+
+                        while(power > 0) {
+                            DestR_ball.x += power*1000 * deltaTime ;
+                            printf("x %f \n", power*1000 * deltaTime );
+                            DestR_ball.y += power*1000 * deltaTime ;
+                            printf("y %f \n", power*1000 * deltaTime);
+                            
+                            power --;
+                        }    
+                        
                     break; 
+                }    
             break;    
             case SDL_MOUSEBUTTONDOWN:
                 
                 if (evenements.button.button == SDL_BUTTON_LEFT){
-                    printf("pressed");
+                    SDL_GetMouseState(&posx,&posy);
+                    display_arrow(&SrcR_arrow,&DestR_arrow,&DestR_ball, posx, posy,&angle);
                 }
                 
             break;    
