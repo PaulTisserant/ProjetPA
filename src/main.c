@@ -61,8 +61,9 @@ int main() {
                 float x3 = 2*b*c;
                 float x4 = x1 -x2;
                 float formule = x4/x3 ; // lois des cosinus
-                printf("x1 : %i,x2:%i,x3:%f,x4:%f, tot :%f",x1,x2,x3,x4,formule) ;
-                printf(" acos :%Lf",acosl(formule));
+                //printf("x1 : %i,x2:%i,x3:%f,x4:%f, tot :%f",x1,x2,x3,x4,formule) ;
+                //printf(" acos :%Lf",acosl(formule));
+
 
     // Boucle principale
     while(!terminer){
@@ -115,23 +116,31 @@ int main() {
         switch(evenements.type)
         {
             case SDL_QUIT:
-                terminer = true; break;
-            case SDL_KEYDOWN:
-            switch(evenements.key.keysym.sym)
-            {
-                case SDLK_ESCAPE:
-                case SDLK_q:
-                    terminer = true; 
-                break; 
-                       
-            }
-            case SDL_MOUSEBUTTONDOWN:
-                switch(evenements.button.button)
-                {
+                terminer = true; 
+            break;
 
-                case SDL_BUTTON_LEFT:
-                break;
+            case SDL_KEYDOWN:
+                switch(evenements.key.keysym.sym) {
+                    
+                    case SDLK_q:
+                        terminer = true; 
+                    break; 
+                    
+                    case SDLK_SPACE:
+                        DestR_ball.x += 50;
+                        DestR_ball.y += 50;
+
+                    break; 
+                        
                 }
+            break;    
+            case SDL_MOUSEBUTTONDOWN:
+                
+                if (evenements.button.button == SDL_BUTTON_LEFT){
+                    printf("pressed");
+                }
+                
+            break;    
         }
 
         SDL_RenderPresent(ecran);
