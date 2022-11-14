@@ -4,7 +4,7 @@
 #include "fonctions_fichiers.h"
 
 
-int main() {
+int main(){
     
 
         /*****************************************************          SDL           ******************************************************************/
@@ -64,26 +64,29 @@ int main() {
                 //printf("x1 : %i,x2:%i,x3:%f,x4:%f, tot :%f",x1,x2,x3,x4,formule) ;
                 //printf(" acos :%Lf",acosl(formule));
 
+    int power = 0;
+
+    char** terrain = lire_fichier("hole2.txt");
+    
+    SDL_Rect SrcR_fond[ligne*colonne] ;
+    SDL_Rect DestR_fond[ligne*colonne];
+
+    SDL_Rect SrcR_hole;
+    SDL_Rect DestR_hole;
+
+    SDL_Rect SrcR_ball;
+    SDL_Rect DestR_ball;
+
+    SDL_Rect SrcR_arrow;
+    SDL_Rect DestR_arrow;   
+    displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
 
     // Boucle principale
     while(!terminer){
 
         SDL_RenderClear(ecran);
 
-        char** terrain = lire_fichier("hole2.txt");
         
-        SDL_Rect SrcR_fond[ligne*colonne] ;
-        SDL_Rect DestR_fond[ligne*colonne];
-
-        SDL_Rect SrcR_hole;
-        SDL_Rect DestR_hole;
-
-        SDL_Rect SrcR_ball;
-        SDL_Rect DestR_ball;
-
-        SDL_Rect SrcR_arrow;
-        SDL_Rect DestR_arrow;   
-        displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
 
         int posx = 0 ;
         int posy = 0;
@@ -112,6 +115,10 @@ int main() {
 
         
         SDL_PollEvent( &evenements );
+
+
+        
+        
         
         switch(evenements.type)
         {
@@ -127,12 +134,20 @@ int main() {
                     break; 
                     
                     case SDLK_SPACE:
-                        DestR_ball.x += 50;
-                        DestR_ball.y += 50;
-
+                        printf("enfoncée");
+                        power += 1;
+                       
+                        DestR_ball.x += 10 * cos(angle);
+                        DestR_ball.y += 10 * sin(angle);
                     break; 
                         
                 }
+            break;
+            case SDL_KEYUP:
+                    case SDLK_SPACE:
+                        printf("relachée");
+                        printf("%d",power);
+                    break; 
             break;    
             case SDL_MOUSEBUTTONDOWN:
                 

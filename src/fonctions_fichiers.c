@@ -236,6 +236,7 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
     
 }
 
+
 /*
 * affiche le trou demandé dans le renderer
 */
@@ -365,7 +366,9 @@ void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ba
             *angle = (*angle*-1);
         }
         if (posy > a_y){
-            *angle += 180 ;
+            *angle += 180;
+        } else {
+           *angle -= 180;
         }
 
         
