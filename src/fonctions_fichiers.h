@@ -61,5 +61,6 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
 */
 void displayHole(SDL_Rect *SrcR_fond, SDL_Rect *DestR_fond, SDL_Rect *SrcR_hole, SDL_Rect *DestR_hole, SDL_Rect *SrcR_ball, SDL_Rect *DestR_ball, const char* nomFichier);
 
+void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ball,int posx,int posy, double* angle);
 
 #endif

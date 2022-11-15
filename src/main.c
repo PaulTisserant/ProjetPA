@@ -54,17 +54,6 @@ int main(int argc, char *argv[]){
     SDL_Texture*  ball = charger_image_transparente("ball.bmp",ecran,0,255,255);
     SDL_Texture*  arrow = charger_image("arrow.bmp",ecran);
 
-                int a ,b ,c ;
-                a = 150 ,c=200,  b=c;
-
-                int x1 = c*c + b*b;
-                int x2 = a*a;
-                float x3 = 2*b*c;
-                float x4 = x1 -x2;
-                float formule = x4/x3 ; // lois des cosinus
-                //printf("x1 : %i,x2:%i,x3:%f,x4:%f, tot :%f",x1,x2,x3,x4,formule) ;
-                //printf(" acos :%Lf",acosl(formule));
-
     int power = 0;
 
     char** terrain = lire_fichier("hole2.txt");
@@ -81,8 +70,9 @@ int main(int argc, char *argv[]){
     SDL_Rect SrcR_arrow;
     SDL_Rect DestR_arrow;   
     displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
-    
-
+         double angle = 0.1;
+        int posx = 0 ;
+        int posy = 0;
     // Boucle principale
     while(!terminer){
 
@@ -90,9 +80,7 @@ int main(int argc, char *argv[]){
 
         
 
-        int posx = 0 ;
-        int posy = 0;
-        long double angle =0;
+
 
         Uint64 currentTick = SDL_GetPerformanceCounter();
         Uint64 lastTick = 0;
@@ -118,8 +106,7 @@ int main(int argc, char *argv[]){
 
         SDL_RenderCopy(ecran, hole,&SrcR_hole,&DestR_hole);
         SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
-        SDL_RenderCopyEx(ecran, arrow,&SrcR_arrow,&DestR_arrow,angle,NULL,SDL_FLIP_NONE);
-
+        SDL_RenderCopyEx(ecran, arrow,&SrcR_arrow,&DestR_arrow,angle+90,NULL,SDL_FLIP_NONE);
         //SDL_PollEvent ...
 
         

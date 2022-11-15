@@ -331,7 +331,7 @@ void displayHole(SDL_Rect* SrcR_fond, SDL_Rect  * DestR_fond, SDL_Rect* SrcR_hol
     desallouer_tab_2D(terrain, ligne);
  
 }
-void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ball,int posx,int posy,long double* angle){
+void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ball,int posx,int posy, double* angle){
 
         SrcR_arrow->x = 0;
         SrcR_arrow->y = 0;
@@ -339,40 +339,44 @@ void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ba
         SrcR_arrow->h = 550;
 
         
-        DestR_arrow->x = DestR_ball->x  ;
-        DestR_arrow->y = DestR_ball->y  ;
+        DestR_arrow->x = DestR_ball->x  + DestR_ball->w/2;
+        DestR_arrow->y = DestR_ball->y  + DestR_ball->h/2;
         DestR_arrow->w  = 20 ;
         DestR_arrow->h  = 20 ;
         //création des coordonées du point a
-        int a_x = DestR_ball->x ;
-        int a_y = DestR_ball->y ;
+        int a_x = DestR_ball->x + DestR_ball->w/2 ;
+        int a_y = DestR_ball->y + DestR_ball->h/2;
         //création des coordonées du point c
         int c_x = posx ;
         int c_y = posy ;
-        int  c = abs(c_x - a_x  ) + abs(c_y - a_y )  ;
+        int  c = sqrt((c_x - a_x  )*(c_x - a_x  ) + (c_y - a_y )*(c_y - a_y )  );
         //création des coordonées du point b
-        int b_x = DestR_ball->x  ;
-        int b_y = DestR_ball->y + c ; 
-        int b = abs(b_x - a_x) + abs(b_y - a_y) ;
-        int a = abs(b_x - posx) + abs(b_y - posy) ;
+        int b_x = a_x;
+        int b_y = a_x + c; 
+        /*
+        if (*c_y < *a_y){
+            *b_y = DestR_ball->y - c + DestR_ball->h/2;
+        }
+        */
+        int b = sqrt((b_x -a_x)*(b_x - a_x)  + (b_y - a_y)*(b_y - a_y) );
+        int a = sqrt((b_x - posx)*(b_x - posx) + (b_y - posy)*(b_y - posy) );
+
         //création des variables pour la formule
+        
         int x1 = c*c + b*b;
         int x2 = a*a;
         float x3 = 2*b*c;
         float x4 = x1 -x2;
         float formule = x4/x3 ; // lois des cosinus
         *angle = (acos(formule) * 180/3.14159);
-        if (posx > a_x ){ 
+
+        if (posx > a_x  ){ 
             *angle = (*angle*-1);
         }
-        if (posy > a_y){
-            *angle += 180;
-        } else {
-           *angle -= 180;
-        }
+        *angle -=180 ;
 
         
-        //printf(" \n angle :%Lf",*angle);
+        
 
 
                 
