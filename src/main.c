@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
         SDL_RenderClear(ecran);
 
         
-
+        
 
 
         Uint64 currentTick = SDL_GetPerformanceCounter();
@@ -145,10 +145,12 @@ int main(int argc, char *argv[]){
                         printf("time %f", deltaTime);
 
                         while(power > 0) {
-                            DestR_ball.x += power*1000 * deltaTime ;
+                            DestR_ball.x += -(power*1000 * deltaTime ) * cos(angle) ;
                             printf("x %f \n", power*1000 * deltaTime );
-                            DestR_ball.y += power*1000 * deltaTime ;
+                            DestR_ball.y += power*1000 * deltaTime * - sin(angle);
                             printf("y %f \n", power*1000 * deltaTime);
+                            SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
+
                             
                             power --;
                         }    
