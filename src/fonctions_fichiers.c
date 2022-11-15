@@ -368,12 +368,13 @@ void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ba
         float x3 = 2*b*c;
         float x4 = x1 -x2;
         float formule = x4/x3 ; // lois des cosinus
-        *angle = (acos(formule) * 180/3.14159);
+        *angle = (acos(formule));
 
         if (posx > a_x  ){ 
             *angle = (*angle*-1);
         }
-        *angle -=180 ;
+        *angle -=PI/2 ;
+        printf("\n%lf",*angle);
 
         
         

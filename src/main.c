@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
     SDL_Rect SrcR_arrow;
     SDL_Rect DestR_arrow;   
     displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
-         double angle = 0.1;
+        double angle = 0.0;
         int posx = 0 ;
         int posy = 0;
     // Boucle principale
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]){
 
         SDL_RenderCopy(ecran, hole,&SrcR_hole,&DestR_hole);
         SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
-        SDL_RenderCopyEx(ecran, arrow,&SrcR_arrow,&DestR_arrow,angle+90,NULL,SDL_FLIP_NONE);
+        SDL_RenderCopyEx(ecran, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
         //SDL_PollEvent ...
 
         
@@ -132,6 +132,11 @@ int main(int argc, char *argv[]){
                     case SDLK_SPACE:
                         //printf("enfoncée");
                         power += 1;
+                            DestR_ball.x -= -5 * cos(angle) ;
+                            printf("x %f \n", power*1000 * deltaTime );
+                            DestR_ball.y -= 5 *  -sin(angle);
+                            printf("y %f \n", power*1000 * deltaTime);
+                            SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
                     break;     
                 }
             break;
@@ -144,16 +149,12 @@ int main(int argc, char *argv[]){
                         printf("power %d \n", power);  
                         printf("time %f", deltaTime);
 
-                        while(power > 0) {
-                            DestR_ball.x += -(power*1000 * deltaTime ) * cos(angle) ;
-                            printf("x %f \n", power*1000 * deltaTime );
-                            DestR_ball.y += power*1000 * deltaTime * - sin(angle);
-                            printf("y %f \n", power*1000 * deltaTime);
-                            SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
+                        
+
 
                             
                             power --;
-                        }    
+                          
                         
                     break; 
                 }    
