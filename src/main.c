@@ -4,8 +4,12 @@
 #include <math.h>
 #include "fonctions_fichiers.h"
 
-void update_data(){
-
+void update_data(world_t* world){
+                            world->ball.x -= -world->ball.power * cos(world->ball.angle) ;
+                            world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+                            if(world->ball.power > 0){
+                            world->ball.power -- ;
+                            }
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         for (int i = 0; i < world->colonne*world->ligne; i++) {
@@ -39,11 +43,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     
                     case SDLK_SPACE:
                         printf("enfoncée");
-                            power += 1;
-                            world->ball.x -= -world->ball.v * cos(world->ball.angle) ;
-                            printf("x %f \n", power*1000  );
-                            world->ball.y -= world->ball.v *  -sin(world->ball.angle);
-                            printf("y %f \n", power*1000 );
+                            world->ball.power += 5;
                         
                     break;     
                 }
@@ -62,9 +62,10 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 
                             
                             power --;
-                          */
+
                         
                     break; 
+                    */
                 }    
             break;    
             case SDL_MOUSEBUTTONDOWN:
@@ -80,6 +81,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     world->arrow.angle = 0 ;
+    world->ball.power = 0 ;
     world->terminer = false ;
     int col = 0;
     int ligne = 0 ;
@@ -192,6 +194,7 @@ int main(int argc, char *argv[]){
         SDL_RenderClear(renderer);
         refresh_graphics(renderer,&world,&textures);
         handle_events(&evenements,&world,&textures);
+        update_data(&world);
         Uint64 currentTick = SDL_GetPerformanceCounter();
         Uint64 lastTick = 0;
         double deltaTime = 0;
@@ -199,7 +202,7 @@ int main(int argc, char *argv[]){
         lastTick = currentTick;
         currentTick = SDL_GetPerformanceCounter();
         deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
-        SDL_Delay(10);
+        SDL_Delay(30);
         //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
 
   

@@ -13,6 +13,7 @@ struct sprite_s{
     int w; /*!< Dimension en largeur. */
     int h; /*!< Dimension en hauteur. */
     int v; /*!< Vitesse. */
+    int power ;
     double angle ; /*!<Vitesse. */
     int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
 
