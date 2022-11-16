@@ -5,18 +5,29 @@
 #include "fonctions_fichiers.h"
 
 void update_data(world_t* world){
-                            world->ball.x -= -world->ball.power * cos(world->ball.angle) ;
-                            world->ball.y -= world->ball.power *  -sin(world->ball.angle);
-                            if(world->ball.power > 0){
-                            world->ball.power -- ;
-                            }
+
+    // fenetre => 700*320
+    
+    world->ball.x -= -world->ball.power * cos(world->ball.angle) ;
+    world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+
+    if (world->ball.x  <= 20 || world->ball.x  >= 700 - 20)
+	{
+		world->ball.power *= -1;
+	}
+	if (world->ball.y <= 20 || world->ball.y >= 320 - 20)
+	{
+		world->ball.power *= -1;
+	}
+    if(world->ball.power > 0){
+        world->ball.power -- ;
+    }
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         for (int i = 0; i < world->colonne*world->ligne; i++) {
             apply_texture(textures->tile[i],renderer,world->tile[i].x,world->tile[i].y,world->tile[i].w,world->tile[i].h,0);
         }
         apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
-        apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
         apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
         apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
         //printf("world->arrow.angle : %lf",world->arrow.angle);
@@ -189,6 +200,9 @@ int main(int argc, char *argv[]){
     world_t world;
     textures_t textures;
     init(&renderer,&fenetre,&textures,&world);
+
+    printf("colonne : %d \n", world.colonne*32);
+    printf("ligne : %d\n", world.ligne*32);
     // Boucle principale
     while(!world.terminer){
         SDL_RenderClear(renderer);
