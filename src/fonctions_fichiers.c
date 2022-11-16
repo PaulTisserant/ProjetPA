@@ -1,3 +1,8 @@
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include "liste.h"
 #include "fonctions_fichiers.h"
 #include <math.h>
 
@@ -299,3 +304,20 @@ void display_arrow(world_t* world){
         world->ball.angle -=PI/2 ;
         world->arrow.angle = world->arrow.angle * (180/PI) ;
 }
+ int sprites_collide(sprite_t *sp2, sprite_t *sp1){
+            //Les deux sprites sont visibles
+            if(sqrt((sp2->x - sp1->x)*(sp2->x - sp1->x)+(sp2->y - sp1->y)*(sp2->y - sp1->y)) < (sp2->w/2 + sp1->w/2) ){
+	        //les deux sprites sont en collision
+            return 1 ;
+            }
+             return 0 ;
+ }
+
+//gestion d'une collision entre deux sprites
+ void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
+     if ( sprites_collide(sp2,sp1) == 1 ){
+        sp2->power= 0 ;
+        
+    }
+
+ }

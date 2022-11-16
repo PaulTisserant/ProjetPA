@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include "liste.h"
 #include "fonctions_fichiers.h"
+#include <SDL2/SDL.h>
 
 void update_data(world_t* world){
 
@@ -22,6 +24,14 @@ void update_data(world_t* world){
     if(world->ball.power > 0){
         world->ball.power -- ;
     }
+    for (int i = 0; i < longueur(world->mur); i++)
+    {
+        sprite_t mur = neme_elem(i,world->mur) ;
+        handle_sprites_collision(&(world->ball),&mur);
+
+
+    }
+    
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         for (int i = 0; i < world->colonne*world->ligne; i++) {
@@ -101,6 +111,7 @@ void init_data(world_t* world){
     world->colonne = col ;
     world->ligne = ligne ;
     world->tile = malloc(sizeof(sprite_t)*world->colonne*world->ligne) ;
+    world->mur = l_vide() ;
     world->terrain = lire_fichier("hole2.txt");              
     for (int i = 0; i < world->ligne; i++) {
         for (int j = 0; j < world->colonne; j++) {
@@ -126,8 +137,11 @@ void init_data(world_t* world){
                 world->hole.angle = 0 ;
                 world->hole.v = 0 ;
             }
-            srcpos++ ;
             
+            if (world->terrain[i][j] == 'X' ){
+                world->mur = ajouter_element(world->tile[srcpos],world->mur);
+            }
+            srcpos++ ;
         }
     }
 

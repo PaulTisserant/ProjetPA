@@ -4,9 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "liste.h"
+/**
+ * \brief Type qui correspond aux données du sprite
+ */
+typedef struct sprite_s sprite_t;
 /**
  * \brief Représentation des sprites du jeu
 */
+
 struct sprite_s{
     int x; /*!< Coordonnée en abscisse. */
     int y; /*!< Coordonnée en ordonnée. */
@@ -18,10 +24,8 @@ struct sprite_s{
     int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
 
 };
-/**
- * \brief Type qui correspond aux données du sprite
- */
-typedef struct sprite_s sprite_t;
+typedef struct Liste *liste ; 
+
 
 /**
  * \brief Représentation du monde du jeu
@@ -29,6 +33,7 @@ typedef struct sprite_s sprite_t;
 struct world_s{
     int terminer ;
     char** terrain;
+    liste mur ;
     int colonne ;
     int ligne ;
     sprite_t ball ; /*!< balle. */
