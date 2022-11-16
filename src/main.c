@@ -1,151 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include <math.h>
 #include "fonctions_fichiers.h"
 
+void update_data(){
 
-int main(int argc, char *argv[]){
-    
-
-        /*****************************************************          SDL           ******************************************************************/
-
-
-    SDL_Window* fenetre; // Déclaration de la fenêtre
-    SDL_Event evenements; // Événements liés à la fenêtre
-    bool terminer = false;
-
-
-    int ligne = 0;
-    int colonne = 0;
-
-    taille_fichier("hole2.txt", &ligne, &colonne);
-
-
-
-
-    if(SDL_Init(SDL_INIT_VIDEO) < 0) // Initialisation de la SDL
-    {
-        printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
-        SDL_Quit();
-        return EXIT_FAILURE;
-    }
-
-
-    // Créer la fenêtre
-    fenetre = SDL_CreateWindow("Fenetre SDL", SDL_WINDOWPOS_CENTERED,
-    SDL_WINDOWPOS_CENTERED, colonne*32, ligne*32, SDL_WINDOW_RESIZABLE);
-
-
-    if(fenetre == NULL) // En cas d’erreur
-    {
-        printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
-        SDL_Quit();
-        return EXIT_FAILURE;
-    }
-
-
-    // Mettre en place un contexte de rendu de l’écran
-    SDL_Renderer* ecran;
-    ecran = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
-
-    SDL_Texture* fond = charger_image( "pavage.bmp", ecran );
-    SDL_Texture*  hole = charger_image_transparente("hole.bmp",ecran,0,255,255);
-    SDL_Texture*  ball = charger_image_transparente("ball.bmp",ecran,0,255,255);
-    SDL_Texture*  arrow = charger_image("arrow.bmp",ecran);
-
-    int power = 0;
-
-    char** terrain = lire_fichier("hole2.txt");
-    
-    SDL_Rect SrcR_fond[ligne*colonne] ;
-    SDL_Rect DestR_fond[ligne*colonne];
-
-    SDL_Rect SrcR_hole;
-    SDL_Rect DestR_hole;
-
-    SDL_Rect SrcR_ball;
-    SDL_Rect DestR_ball;
-
-    SDL_Rect SrcR_arrow;
-    SDL_Rect DestR_arrow;   
-    displayHole(&SrcR_fond, &DestR_fond, &SrcR_hole, &DestR_hole, &SrcR_ball, &DestR_ball, "hole2.txt");
-        double angle = 0.0;
-        int posx = 0 ;
-        int posy = 0;
-    // Boucle principale
-    while(!terminer){
-
-        SDL_RenderClear(ecran);
-
-        
-        
-
-
-        Uint64 currentTick = SDL_GetPerformanceCounter();
-        Uint64 lastTick = 0;
-        double deltaTime = 0;
-
-
-        lastTick = currentTick;
-        currentTick = SDL_GetPerformanceCounter();
-        deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
-        
-
-
-
-
-
-
-
-
-        SDL_RenderCopy(ecran, fond, NULL, NULL);
-        for (int i = 0; i < ligne*colonne; i++) {
-            SDL_RenderCopy(ecran,fond,&SrcR_fond[i],&DestR_fond[i]);
+}
+void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+        for (int i = 0; i < world->colonne*world->ligne; i++) {
+            apply_texture(textures->tile[i],renderer,world->tile[i].x,world->tile[i].y,world->tile[i].w,world->tile[i].h,0);
         }
+        apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
+        apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
+        apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
+        apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
+        //printf("world->arrow.angle : %lf",world->arrow.angle);
+}
 
-        SDL_RenderCopy(ecran, hole,&SrcR_hole,&DestR_hole);
-        SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
-        SDL_RenderCopyEx(ecran, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
-        //SDL_PollEvent ...
+void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
+    int power = 1 ; 
+    while(   SDL_PollEvent( evenements ) ){ 
 
         
-
         
-        SDL_PollEvent( &evenements );
-
-        
-        
-        switch(evenements.type)
+        switch(evenements->type)
         {
             case SDL_QUIT:
-                terminer = true; 
+                world->terminer = true; 
             break;
 
             case SDL_KEYDOWN:
-                switch(evenements.key.keysym.sym) {
+                switch(evenements->key.keysym.sym) {
                     
                     case SDLK_q:
-                        terminer = true; 
+                        world->terminer = true; 
                     break; 
                     
                     case SDLK_SPACE:
-                        //printf("enfoncée");
-                        power += 1;
-                            DestR_ball.x -= -5 * cos(angle) ;
-                            printf("x %f \n", power*1000 * deltaTime );
-                            DestR_ball.y -= 5 *  -sin(angle);
-                            printf("y %f \n", power*1000 * deltaTime);
-                            SDL_RenderCopy(ecran, ball,&SrcR_ball,&DestR_ball);
+                        printf("enfoncée");
+                            power += 1;
+                            world->ball.x -= -world->ball.v * cos(world->ball.angle) ;
+                            printf("x %f \n", power*1000  );
+                            world->ball.y -= world->ball.v *  -sin(world->ball.angle);
+                            printf("y %f \n", power*1000 );
+                        
                     break;     
                 }
             break;
             case SDL_KEYUP:
 
-                switch(evenements.key.keysym.sym) {
+                switch(evenements->key.keysym.sym) {
 
                     case SDLK_SPACE:
-                        //printf("relaché");
+                        /*printf("relaché");
                         printf("power %d \n", power);  
                         printf("time %f", deltaTime);
 
@@ -154,33 +62,156 @@ int main(int argc, char *argv[]){
 
                             
                             power --;
-                          
+                          */
                         
                     break; 
                 }    
             break;    
             case SDL_MOUSEBUTTONDOWN:
                 
-                if (evenements.button.button == SDL_BUTTON_LEFT){
-                    SDL_GetMouseState(&posx,&posy);
-                    display_arrow(&SrcR_arrow,&DestR_arrow,&DestR_ball, posx, posy,&angle);
+                if (evenements->button.button == SDL_BUTTON_LEFT){
+                    display_arrow(world);
                 }
                 
             break;    
         }
+    }
+}
+void init_data(world_t* world){
+//---------------------Initialisation des sprites----------------------------------
+    world->arrow.angle = 0 ;
+    world->terminer = false ;
+    int col = 0;
+    int ligne = 0 ;
+    int srcpos = 0 ;
+    taille_fichier("hole2.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
+    world->colonne = col ;
+    world->ligne = ligne ;
+    world->tile = malloc(sizeof(sprite_t)*world->colonne*world->ligne) ;
+    world->terrain = lire_fichier("hole2.txt");              
+    for (int i = 0; i < world->ligne; i++) {
+        for (int j = 0; j < world->colonne; j++) {
+            world->tile[srcpos].x = 32*j ;
+            world->tile[srcpos].y = 32*i ;
+            world->tile[srcpos].w = 32 ;
+            world->tile[srcpos].h = 32 ;
+            world->tile[srcpos].angle = 0 ;
+            world->tile[srcpos].v = 0 ; 
+            if ( world->terrain[i][j] == 'B') {
+                world->ball.x = 32*j ;
+                world->ball.y = i*32 ;
+                world->ball.w = 20 ;
+                world->ball.h = 20 ;
+                world->ball.angle = 0 ;
+                world->ball.v = 10 ;
+            }
+            if (world->terrain[i][j] == 'O' ) {
+                world->hole.x = 32*j ;
+                world->hole.y = i*32 ;
+                world->hole.w = 10 ;
+                world->hole.h = 10 ;
+                world->hole.angle = 0 ;
+                world->hole.v = 0 ;
+            }
+            srcpos++ ;
+            
+        }
+    }
 
-        SDL_RenderPresent(ecran);
+    
+}
+void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
+    texture->ball = charger_image_transparente("ball.bmp",renderer,0,255,255);
+    texture->hole = charger_image_transparente("hole.bmp",renderer,0,255,255);
+    texture->arrow = charger_image("arrow.bmp",renderer);
+    texture->tile = malloc(sizeof(textures_t)*world->colonne*world->ligne);
+    //Initialisation des textures du terrain
+    SDL_Texture*  wall =charger_image("wall.bmp",renderer);
+    SDL_Texture*  grass =charger_image("grass2.bmp",renderer);
+    int srcpos = 0 ;
+    for (int i = 0; i < world->ligne; i++) {
+        for (int j = 0; j < world->colonne; j++) {
+            if (world->terrain[i][j] == ' ' || world->terrain[i][j] == 'O' || world->terrain[i][j] == 'B') {
+
+                texture->tile[srcpos] = grass;
+
+            }
+            if (world->terrain[i][j] == 'X') {
+                texture->tile[srcpos] = wall;
+            }
+            /*
+            world->tile[srcpos].x = 32*j ;
+            world->tile[srcpos].x = 32*i ;
+            world->tile[srcpos].w = 32 ;
+            world->tile[srcpos].h = 32 ;
+            world->tile[srcpos].angle = 0 ;
+            world->tile[srcpos].v = 0 ; 
+            */
+            srcpos++ ;
+        }
+    }    
+    printf("Init texture terminer");
+
+}
+void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
+    if(SDL_Init(SDL_INIT_VIDEO) < 0) // Initialisation de la SDL
+    {
+        printf("Erreur d’initialisation de la SDL:  %s",SDL_GetError());
+        SDL_Quit();
+    }
+
+
+    // Créer la fenêtre
+    SDL_CreateWindowAndRenderer(world->colonne*32, world->ligne*32, SDL_WINDOW_SHOWN, fenetre, renderer);
+
+    if(fenetre == NULL) // En cas d’erreur
+    {
+        printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
+        SDL_Quit();
+    }
+
+
+    
+}
+
+void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world_t* world){
+    init_data(world);
+    init_renderer(renderer,fenetre,world);
+    init_textures(*renderer,texture,world);
+}
+int main(int argc, char *argv[]){
+    //INIT
+    SDL_Renderer *renderer;
+    SDL_Window* fenetre; // Déclaration de la fenêtre
+    SDL_Event evenements; // Événements liés à la fenêtre
+    world_t world;
+    textures_t textures;
+    init(&renderer,&fenetre,&textures,&world);
+    // Boucle principale
+    while(!world.terminer){
+        SDL_RenderClear(renderer);
+        refresh_graphics(renderer,&world,&textures);
+        handle_events(&evenements,&world,&textures);
+        Uint64 currentTick = SDL_GetPerformanceCounter();
+        Uint64 lastTick = 0;
+        double deltaTime = 0;
+        int power = 0 ;
+        lastTick = currentTick;
+        currentTick = SDL_GetPerformanceCounter();
+        deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
+        SDL_Delay(10);
+        //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
+
+  
+
+        SDL_RenderPresent(renderer);
     }
 
 
     // Libérer de la mémoire
-
-    SDL_DestroyTexture(fond);
-    SDL_DestroyTexture(arrow);
-
-    SDL_DestroyTexture(hole);
-    SDL_DestroyTexture(ball);
-    SDL_DestroyRenderer(ecran);
+    SDL_DestroyTexture(textures.hole);
+    SDL_DestroyTexture(textures.ball);
+    SDL_DestroyRenderer(renderer);
 
     // Quitter SDL
     SDL_DestroyWindow(fenetre);

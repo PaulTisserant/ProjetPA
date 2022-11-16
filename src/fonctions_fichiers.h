@@ -4,6 +4,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+/**
+ * \brief Représentation des sprites du jeu
+*/
+struct sprite_s{
+    int x; /*!< Coordonnée en abscisse. */
+    int y; /*!< Coordonnée en ordonnée. */
+    int w; /*!< Dimension en largeur. */
+    int h; /*!< Dimension en hauteur. */
+    int v; /*!< Vitesse. */
+    double angle ; /*!<Vitesse. */
+    int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
+
+};
+/**
+ * \brief Type qui correspond aux données du sprite
+ */
+typedef struct sprite_s sprite_t;
+
+/**
+ * \brief Représentation du monde du jeu
+*/
+struct world_s{
+    int terminer ;
+    char** terrain;
+    int colonne ;
+    int ligne ;
+    sprite_t ball ; /*!< balle. */
+	sprite_t* tile; /*!<Tableau de tuile. */
+    sprite_t hole; /*!<Troue. */
+    sprite_t arrow ; /*!<Troue.*/
+};
+
+/**
+ * \brief Type qui correspond aux données du monde
+ */
+typedef struct world_s world_t;
+
+
+/**
+ * \brief Représentation pour stocker les textures nécessaires à l'affichage graphique
+*/
+struct textures_s{
+    SDL_Texture** tile; /*!< Texture liée à l'image du fond de l'écran. */
+    SDL_Texture* ball; /*!< Texture liée à l'image du vaisseau. */
+    SDL_Texture* hole; /*!< Texture liée à l'image des adversaires. */
+    SDL_Texture* arrow;  /*!< Texture liée à l'image du missile. */
+};
+
+/**
+ * \brief Type qui correspond aux textures du jeu
+*/
+typedef struct textures_s textures_t;
+
+
+
+
+
+
 
 
 
@@ -61,6 +119,6 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
 */
 void displayHole(SDL_Rect *SrcR_fond, SDL_Rect *DestR_fond, SDL_Rect *SrcR_hole, SDL_Rect *DestR_hole, SDL_Rect *SrcR_ball, SDL_Rect *DestR_ball, const char* nomFichier);
 
-void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ball,int posx,int posy, double* angle);
+void display_arrow(world_t* world);
 
 #endif

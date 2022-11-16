@@ -160,7 +160,20 @@ char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
     desallouer_tab_2D(tab,n);
     return res;
 }
+void apply_texture(SDL_Texture *texture,SDL_Renderer *renderer,int x, int y,int w,int h,double angle){
+    SDL_Rect dst = {0, 0, 0, 0};
+    
+    dst.w = w; 
+    dst.h= h;
+    dst.x = x;
+    dst.y=y;
+    if (angle !=0){
+    SDL_RenderCopyEx(renderer, texture, NULL, &dst,angle,NULL,SDL_FLIP_NONE);
+    }
+    else{SDL_RenderCopy(renderer, texture, NULL, &dst);
+    }
 
+}
 /*
  Écrire le tableau tab de taille n × m dans un fichier dont le nom est nomFichier.
 */
@@ -193,7 +206,6 @@ void ecrire_fichier(const char* nomFichier, char** tab, int n, int m) {
 SDL_Texture* charger_image (const char* nomfichier, SDL_Renderer* renderer) {
 
     SDL_Surface* image = SDL_LoadBMP(nomfichier);
-    image = SDL_LoadBMP(nomfichier);
     if(image == NULL)
     {
         fprintf(stderr, "Erreur pendant chargement image BMP: %s", SDL_GetError());
@@ -211,22 +223,22 @@ SDL_Texture* charger_image (const char* nomfichier, SDL_Renderer* renderer) {
 }
 
 SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b) {
-    
-    SDL_Surface* surface = SDL_LoadBMP(nomfichier);
-    surface = SDL_LoadBMP(nomfichier);
+    SDL_Surface *tmp = NULL;
+    SDL_Texture *texture = NULL;
+    tmp = SDL_LoadBMP(nomfichier);
 
     // Récupérer la valeur (RGB) du pixel au format donné.
-    Uint32 valRGB = SDL_MapRGB(surface->format, r, g, b);
+    Uint32 valRGB = SDL_MapRGB(tmp->format, r, g, b);
     // Définir la couleur (pixel transparent) dans une surface.
-    SDL_SetColorKey( surface, SDL_TRUE, valRGB) ;
+    SDL_SetColorKey( tmp, SDL_TRUE, valRGB) ;
 
-    if(surface == NULL)
+    if(tmp == NULL)
     {
         fprintf(stderr, "Erreur pendant chargement surface BMP: %s", SDL_GetError());
         return NULL;
     }
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
     if(texture == NULL)
     {
         fprintf(stderr, "Erreur pendant creation de la texture liee a l'surface chargee: %s", SDL_GetError());
@@ -240,112 +252,21 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
 /*
 * affiche le trou demandé dans le renderer
 */
-void displayHole(SDL_Rect* SrcR_fond, SDL_Rect  * DestR_fond, SDL_Rect* SrcR_hole, SDL_Rect* DestR_hole, SDL_Rect* SrcR_ball, SDL_Rect* DestR_ball, const char* nomFichier) {
 
-    int ligne  = 0;
-    int colonne = 0 ;
-
-    taille_fichier(nomFichier,&ligne,&colonne);
-
-    char** terrain = lire_fichier(nomFichier);
-    
-
-
-
-
-    int srcpos = 0 ;
-
-    for (int i = 0; i < ligne; i++) {
-        for (int j = 0; j < colonne; j++) 
-        {
-            if (terrain[i][j] == ' ') {
-
-                SrcR_fond[srcpos].x = 0;
-                SrcR_fond[srcpos].y = 0;
-                SrcR_fond[srcpos].w = 32;
-                SrcR_fond[srcpos].h = 32;
-
-            }
-
-            if (terrain[i][j] == 'O') {
-
-                SrcR_fond[srcpos].x = 0;
-                SrcR_fond[srcpos].y = 0;
-                SrcR_fond[srcpos].w = 32;
-                SrcR_fond[srcpos].h = 32;
-
-                SrcR_hole->x = 0;
-                SrcR_hole->y = 0;
-                SrcR_hole->w = 100;
-                SrcR_hole->h = 100;
-
-                DestR_hole->x = j*32;
-                DestR_hole->y = i*32;
-                DestR_hole->w = 20;
-                DestR_hole->h = 20; 
-            }
-
-            if (terrain[i][j] == 'X') {
-
-                SrcR_fond[srcpos].x = 14*32;
-                SrcR_fond[srcpos].y = 4*32;
-                SrcR_fond[srcpos].w = 32;
-                SrcR_fond[srcpos].h = 32;
-            }
-
-            if (terrain[i][j] == 'B') {
-
-                SrcR_fond[srcpos].x = 0;
-                SrcR_fond[srcpos].y = 0;
-                SrcR_fond[srcpos].w = 32;
-                SrcR_fond[srcpos].h = 32;
-
-                SrcR_ball->x = 0;
-                SrcR_ball->y = 0;
-                SrcR_ball->w = 100;
-                SrcR_ball->h = 100;
-
-                DestR_ball->x = j*32;
-                DestR_ball->y = i*32;
-                DestR_ball->w = 20;
-                DestR_ball->h = 20; 
-            }
-
-            srcpos++ ;
-            
-        }
-    }
-
-    int res ;
-
-    for (int i = 0; i < ligne; i++) {
-        for (int j = 0; j < colonne; j++) {
-            res = j+colonne*i ;
-            DestR_fond[res].x = j*32;
-            DestR_fond[res].y = i*32;
-            DestR_fond[res].w = 32;
-            DestR_fond[res].h = 32;  
-        }
-    }
-
-    desallouer_tab_2D(terrain, ligne);
- 
-}
-void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ball,int posx,int posy, double* angle){
-
-        SrcR_arrow->x = 0;
-        SrcR_arrow->y = 0;
-        SrcR_arrow->w = 700;
-        SrcR_arrow->h = 550;
-
-        
-        DestR_arrow->x = DestR_ball->x  + DestR_ball->w/2;
-        DestR_arrow->y = DestR_ball->y  + DestR_ball->h/2;
-        DestR_arrow->w  = 20 ;
-        DestR_arrow->h  = 20 ;
+void display_arrow(world_t* world){
+        world->arrow.angle = 0 ;
+        world->ball.angle = 0 ;
+        int posx = 0 ;
+        int posy = 0 ;       
+        SDL_GetMouseState(&posx,&posy); 
+        world->arrow.x = world->ball.x  ;
+        world->arrow.y = world->ball.y  ;
+        world->arrow.w  = 20 ;
+        world->arrow.h  = 20 ;
+        world->arrow.is_visible = 1 ;
         //création des coordonées du point a
-        int a_x = DestR_ball->x + DestR_ball->w/2 ;
-        int a_y = DestR_ball->y + DestR_ball->h/2;
+        int a_x = world->ball.x + world->ball.w/2 ;
+        int a_y = world->ball.y + world->ball.w/2;
         //création des coordonées du point c
         int c_x = posx ;
         int c_y = posy ;
@@ -368,17 +289,13 @@ void display_arrow(SDL_Rect* SrcR_arrow,SDL_Rect* DestR_arrow,SDL_Rect* DestR_ba
         float x3 = 2*b*c;
         float x4 = x1 -x2;
         float formule = x4/x3 ; // lois des cosinus
-        *angle = (acos(formule));
+        world->ball.angle = (acos(formule));
 
         if (posx > a_x  ){ 
-            *angle = (*angle*-1);
+            world->ball.angle = (world->ball.angle*-1);
         }
-        *angle -=PI/2 ;
-        printf("\n%lf",*angle);
-
-        
-        
-
-
-                
+        world->arrow.angle = world->ball.angle ;
+        world->arrow.angle -=PI/2 ;
+        world->ball.angle -=PI/2 ;
+        world->arrow.angle = world->arrow.angle * (180/PI) ;
 }
