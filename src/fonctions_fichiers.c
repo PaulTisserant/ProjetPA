@@ -315,9 +315,11 @@ void display_arrow(world_t* world){
 
 //gestion d'une collision entre deux sprites
  void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
-     if ( sprites_collide(sp2,sp1) == 1 ){
-        sp2->power= 0 ;
-        
+
+    if ( sprites_collide(sp2,sp1) == 1 ){
+        //sp2->x += -sp2->power * cos(sp2->angle) ;
+        //sp2->y += sp2->power *  -sin(sp2->angle);
+        sp2->power *= -1;
     }
 
  }
