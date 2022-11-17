@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "liste.h"
+
+#define PI 3.14159265
+
 /**
  * \brief Type qui correspond aux données du sprite
  */
@@ -36,6 +39,8 @@ struct world_s{
     liste mur ;
     int colonne ;
     int ligne ;
+    int powerPress;
+
     sprite_t ball ; /*!< balle. */
 	sprite_t* tile; /*!<Tableau de tuile. */
     sprite_t hole; /*!<Troue. */

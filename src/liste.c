@@ -32,7 +32,7 @@ sprite_t prem (liste L){
     printf ("Calcul de prem sur liste vide !\n") ;
     exit (0) ;
   }
-  return L->premier ;
+  return L->premier ; 
 }
 
 liste reste (liste L){

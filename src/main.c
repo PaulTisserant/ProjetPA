@@ -6,32 +6,45 @@
 #include "fonctions_fichiers.h"
 #include <SDL2/SDL.h>
 
+#define DEG 0.0174533
+
 void update_data(world_t* world){
-
+    //printf("%d \n", world->ball.power);
     // fenetre => 700*320
-    
-    world->ball.x -= -world->ball.power * cos(world->ball.angle) ;
-    world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+    printf("%lf \n", world->ball.angle );
+    //for (int i = 0; i < abs(world->ball.power); i++)
+    //{
+        world->ball.x -= -world->ball.power * cos(world->ball.angle);
+        world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+        if (world->ball.x < 20 || world->ball.x > 700 - 20)
+        {
+            double rel = (700+(world->ball.h/2))-(700+(world->ball.w/2));
+            double norm = rel/(world->ball.h/2);
+            double bounce = norm * (5*PI/12);
+            world->ball.angle = bounce;
+            world->ball.power -- ;
 
-    if (world->ball.x  <= 20 || world->ball.x  >= 700 - 20)
-	{
-		world->ball.power *= -1;
-	}
-	if (world->ball.y <= 20 || world->ball.y >= 320 - 20)
-	{
-		world->ball.power *= -1;
-	}
+        }
+        if (world->ball.y < 20 || world->ball.y > 340 - 20)
+        {
+            double rel = (320+(world->ball.h/2))-(320+(world->ball.w/2));
+            double norm = rel/(world->ball.h/2);
+            double bounce = norm * (5*PI/12);
+            world->ball.angle = bounce;
+            world->ball.power -- ;
+        }
+
+        for (int i = 0; i < longueur(world->mur); i++)
+        {
+            sprite_t mur = neme_elem(i,world->mur) ;
+            handle_sprites_collision(&(world->ball),&mur);
+        }
+
+    //}
     if(world->ball.power > 0){
         world->ball.power -- ;
     }
-    for (int i = 0; i < longueur(world->mur); i++)
-    {
-        sprite_t mur = neme_elem(i,world->mur) ;
-        handle_sprites_collision(&(world->ball),&mur);
-
-
-    }
-    
+   
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         for (int i = 0; i < world->colonne*world->ligne; i++) {
@@ -44,7 +57,8 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
 }
 
 void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
-    int power = 1 ; 
+    bool pressed = false;
+    
     while(   SDL_PollEvent( evenements ) ){ 
 
         
@@ -63,9 +77,10 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     break; 
                     
                     case SDLK_SPACE:
-                        printf("enfoncée");
-                            world->ball.power += 5;
-                        
+                        pressed = true;
+                        //if(world->powerPress < 30) {
+                            world->powerPress ++;
+                        //}
                     break;     
                 }
             break;
@@ -74,19 +89,16 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                 switch(evenements->key.keysym.sym) {
 
                     case SDLK_SPACE:
-                        /*printf("relaché");
-                        printf("power %d \n", power);  
-                        printf("time %f", deltaTime);
-
-                        
-
-
-                            
-                            power --;
+                        //if(pressed) {
+                            for (int i = 0; i < world->powerPress; i++)
+                            {
+                                world->ball.power += 2;
+                            } 
+                       // }
 
                         
                     break; 
-                    */
+                
                 }    
             break;    
             case SDL_MOUSEBUTTONDOWN:
@@ -102,7 +114,8 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     world->arrow.angle = 0 ;
-    world->ball.power = 0 ;
+    world->ball.power = 5 ;
+    world->powerPress = 5 ;
     world->terminer = false ;
     int col = 0;
     int ligne = 0 ;
@@ -206,7 +219,9 @@ void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world
     init_renderer(renderer,fenetre,world);
     init_textures(*renderer,texture,world);
 }
+
 int main(int argc, char *argv[]){
+
     //INIT
     SDL_Renderer *renderer;
     SDL_Window* fenetre; // Déclaration de la fenêtre
@@ -230,7 +245,7 @@ int main(int argc, char *argv[]){
         lastTick = currentTick;
         currentTick = SDL_GetPerformanceCounter();
         deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
-        SDL_Delay(30);
+        SDL_Delay(20);
         //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
 
   
