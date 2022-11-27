@@ -7,15 +7,17 @@
 #include <SDL2/SDL.h>
 
 #define DEG 0.0174533
-
+#define DEC 250
+#define HAUT 100
 void update_data(world_t* world){
     //printf("%d \n", world->ball.power);
     // fenetre => 700*320
-    printf("%lf \n", world->ball.angle );
+    //printf("%lf \n", world->ball.angle );
     //for (int i = 0; i < abs(world->ball.power); i++)
     //{
         world->ball.x -= -world->ball.power * cos(world->ball.angle);
         world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+        /*
         if (world->ball.x < 20 || world->ball.x > 700 - 20)
         {
             double rel = (700+(world->ball.h/2))-(700+(world->ball.w/2));
@@ -33,7 +35,7 @@ void update_data(world_t* world){
             world->ball.angle = bounce;
             world->ball.power -- ;
         }
-
+*/
         for (int i = 0; i < longueur(world->mur); i++)
         {
             sprite_t mur = neme_elem(i,world->mur) ;
@@ -47,7 +49,9 @@ void update_data(world_t* world){
    
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
-        for (int i = 0; i < world->colonne*world->ligne; i++) {
+        apply_texture(textures->back,renderer,0,0,1280,720,0);
+
+        for (int i = 0; i < (world->colonne+2)*(world->ligne+2); i++) {
             apply_texture(textures->tile[i],renderer,world->tile[i].x,world->tile[i].y,world->tile[i].w,world->tile[i].h,0);
         }
         apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
@@ -113,8 +117,10 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 }
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
+    printf("init data \n");
+
     world->arrow.angle = 0 ;
-    world->ball.power = 5 ;
+    world->ball.power = 0 ;
     world->powerPress = 5 ;
     world->terminer = false ;
     int col = 0;
@@ -123,61 +129,84 @@ void init_data(world_t* world){
     taille_fichier("hole2.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
-    world->tile = malloc(sizeof(sprite_t)*world->colonne*world->ligne) ;
+    printf("ligne : %i,col:%i",col,ligne);
+    world->tile = malloc(sizeof(sprite_t)*(world->colonne+2)*(world->ligne+2)) ;
     world->mur = l_vide() ;
+    world->tour_terrain = l_vide() ;
     world->terrain = lire_fichier("hole2.txt");              
-    for (int i = 0; i < world->ligne; i++) {
-        for (int j = 0; j < world->colonne; j++) {
-            world->tile[srcpos].x = 32*j ;
-            world->tile[srcpos].y = 32*i ;
+    for (int i = 0; i < world->ligne+2; i++) {
+        for (int j = 0; j < world->colonne+2; j++) {      
+
+            world->tile[srcpos].x = 32*j + DEC ;
+            world->tile[srcpos].y = 32*i + HAUT ;
             world->tile[srcpos].w = 32 ;
             world->tile[srcpos].h = 32 ;
             world->tile[srcpos].angle = 0 ;
-            world->tile[srcpos].v = 0 ; 
-            if ( world->terrain[i][j] == 'B') {
-                world->ball.x = 32*j ;
-                world->ball.y = i*32 ;
-                world->ball.w = 20 ;
-                world->ball.h = 20 ;
-                world->ball.angle = 0 ;
-                world->ball.v = 10 ;
+            world->tile[srcpos].v = 0 ;
+            if (j==0 || i == 0 || j >world->colonne || i >world->ligne)
+            {
+                //printf("tour_terrain");
+                world->tour_terrain = ajouter_element(world->tile[srcpos],world->tour_terrain);
             }
-            if (world->terrain[i][j] == 'O' ) {
-                world->hole.x = 32*j ;
-                world->hole.y = i*32 ;
-                world->hole.w = 10 ;
-                world->hole.h = 10 ;
-                world->hole.angle = 0 ;
-                world->hole.v = 0 ;
-            }
-            
-            if (world->terrain[i][j] == 'X' ){
-                world->mur = ajouter_element(world->tile[srcpos],world->mur);
+            else{
+                printf("%i  ,  %i \n",i,j);
+                if ( world->terrain[i-1][j-1] == 'B') {
+                    world->ball.x = 32*j + DEC;
+                    world->ball.y = i*32 + HAUT;
+                    world->ball.w = 20 ;
+                    world->ball.h = 20 ;
+                    world->ball.angle = 0 ;
+                    world->ball.v = 10 ;
+                }
+                if (world->terrain[i-1][j-1] == 'O' ) {
+                    world->hole.x = 32*j + DEC;
+                    world->hole.y = i*32 + HAUT;
+                    world->hole.w = 10 ;
+                    world->hole.h = 10 ;
+                    world->hole.angle = 0 ;
+                    world->hole.v = 0 ;
+                }
+                
+                if (world->terrain[i-1][j-1] == 'X' ){
+                    world->mur = ajouter_element(world->tile[srcpos],world->mur);
+                }
             }
             srcpos++ ;
+            
         }
     }
-
+    printf("fininit");
     
 }
 void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
+    printf("init textures \n");
     texture->ball = charger_image_transparente("ball.bmp",renderer,0,255,255);
     texture->hole = charger_image_transparente("hole.bmp",renderer,0,255,255);
     texture->arrow = charger_image("arrow.bmp",renderer);
-    texture->tile = malloc(sizeof(textures_t)*world->colonne*world->ligne);
+    texture->back = charger_image("background.bmp",renderer);
+    texture->tile = malloc(sizeof(textures_t)*(world->colonne+2)*(world->ligne+2));
     //Initialisation des textures du terrain
     SDL_Texture*  wall =charger_image("wall.bmp",renderer);
     SDL_Texture*  grass =charger_image("grass2.bmp",renderer);
+    SDL_Texture*  block =charger_image("block.bmp",renderer);
+
     int srcpos = 0 ;
-    for (int i = 0; i < world->ligne; i++) {
-        for (int j = 0; j < world->colonne; j++) {
-            if (world->terrain[i][j] == ' ' || world->terrain[i][j] == 'O' || world->terrain[i][j] == 'B') {
+    for (int i = 0; i < world->ligne+2; i++) {
+        for (int j = 0; j < world->colonne+2; j++) {
 
-                texture->tile[srcpos] = grass;
-
+            if (j==0 || i == 0 || i >world->ligne || j>world->colonne)
+            {
+                texture->tile[srcpos] = block;
             }
-            if (world->terrain[i][j] == 'X') {
-                texture->tile[srcpos] = wall;
+            else{
+                if (world->terrain[i-1][j-1] == ' ' || world->terrain[i-1][j-1] == 'O' || world->terrain[i-1][j-1] == 'B') {
+
+                    texture->tile[srcpos] = grass;
+
+                }
+                if (world->terrain[i-1][j-1] == 'X') {
+                    texture->tile[srcpos] = wall;
+                }
             }
             /*
             world->tile[srcpos].x = 32*j ;
@@ -194,6 +223,8 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
 
 }
 void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
+    printf("init renderer \n");
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0) // Initialisation de la SDL
     {
         printf("Erreur d’initialisation de la SDL:  %s",SDL_GetError());
@@ -202,7 +233,7 @@ void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
 
 
     // Créer la fenêtre
-    SDL_CreateWindowAndRenderer(world->colonne*32, world->ligne*32, SDL_WINDOW_SHOWN, fenetre, renderer);
+    SDL_CreateWindowAndRenderer(1280, 720, SDL_WINDOW_SHOWN, fenetre, renderer);
 
     if(fenetre == NULL) // En cas d’erreur
     {

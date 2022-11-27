@@ -37,6 +37,7 @@ struct world_s{
     int terminer ;
     char** terrain;
     liste mur ;
+    liste tour_terrain ;
     int colonne ;
     int ligne ;
     int powerPress;
@@ -61,6 +62,7 @@ struct textures_s{
     SDL_Texture* ball; /*!< Texture liée à l'image du vaisseau. */
     SDL_Texture* hole; /*!< Texture liée à l'image des adversaires. */
     SDL_Texture* arrow;  /*!< Texture liée à l'image du missile. */
+    SDL_Texture* back;
 };
 
 /**
