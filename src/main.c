@@ -10,39 +10,26 @@
 #define DEC 250
 #define HAUT 100
 void update_data(world_t* world){
-    //printf("%d \n", world->ball.power);
-    // fenetre => 700*320
-    //printf("%lf \n", world->ball.angle );
-    //for (int i = 0; i < abs(world->ball.power); i++)
-    //{
-        world->ball.x -= -world->ball.power * cos(world->ball.angle);
-        world->ball.y -= world->ball.power *  -sin(world->ball.angle);
-        /*
-        if (world->ball.x < 20 || world->ball.x > 700 - 20)
-        {
-            double rel = (700+(world->ball.h/2))-(700+(world->ball.w/2));
-            double norm = rel/(world->ball.h/2);
-            double bounce = norm * (5*PI/12);
-            world->ball.angle = bounce;
-            world->ball.power -- ;
 
-        }
-        if (world->ball.y < 20 || world->ball.y > 340 - 20)
+        for (int i = 0; i < longueur(world->tour_terrain); i++)
         {
-            double rel = (320+(world->ball.h/2))-(320+(world->ball.w/2));
-            double norm = rel/(world->ball.h/2);
-            double bounce = norm * (5*PI/12);
-            world->ball.angle = bounce;
-            world->ball.power -- ;
+            sprite_t tourMur = neme_elem(i,world->tour_terrain) ;
+            handle_sprites_collision(&(world->ball),&tourMur);
         }
-*/
+
         for (int i = 0; i < longueur(world->mur); i++)
         {
             sprite_t mur = neme_elem(i,world->mur) ;
             handle_sprites_collision(&(world->ball),&mur);
         }
 
-    //}
+
+
+        world->ball.x -= -world->ball.power * cos(world->ball.angle);
+        world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+
+
+    
     if(world->ball.power > 0){
         world->ball.power -- ;
     }
@@ -82,9 +69,9 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     
                     case SDLK_SPACE:
                         pressed = true;
-                        //if(world->powerPress < 30) {
+                        if(world->powerPress < 20) {
                             world->powerPress ++;
-                        //}
+                        }
                     break;     
                 }
             break;
@@ -96,7 +83,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         //if(pressed) {
                             for (int i = 0; i < world->powerPress; i++)
                             {
-                                world->ball.power += 2;
+                                world->ball.power += 1;
                             } 
                        // }
 

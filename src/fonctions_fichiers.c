@@ -305,26 +305,26 @@ void display_arrow(world_t* world){
         world->ball.angle -=PI/2;
         world->arrow.angle = world->arrow.angle * 180/PI;
 }
- int sprites_collide(sprite_t *sp2, sprite_t *sp1){
+
+
+int sprites_collide(sprite_t *sp2, sprite_t *sp1){
     //Les deux sprites sont visibles
     if ( sp1->x < sp2->x + sp2->w && sp1->x + sp1->w > sp2->x && sp1->y < sp2->y + sp2->h && sp1->h +sp1->y > sp2->y){
     //les deux sprites sont en collision
         return 1 ;
     }
-        return 0 ;
+    return 0 ;
 }
 
 //gestion d'une collision entre deux sprites
- void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
+void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
 
     if ( sprites_collide(sp2,sp1) == 1 ){
-        //sp2->x += -sp2->power * cos(sp2->angle) ;
-        //sp2->y += sp2->power *  -sin(sp2->angle);
         double rel = (sp1->y+(sp1->h/2))-(sp2->y+(sp2->w/2));
         double norm = rel/(sp1->h/2);
         double bounce = norm * (5*PI/12);
         sp2->angle = bounce;
-        sp2->power --;
+        //sp2->power -= 2;
     }
 
- }
+}
