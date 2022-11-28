@@ -1,9 +1,11 @@
                      
            O         
 
-                 X   
-     X           X   
-     X           X   
-     X           X   
-     X     B     X   
-                      
+                 
+  XXXX         
+  X     X   X X   X X
+  X     X   X X   X X
+  XXXX  X  BX X   X X
+     X  X   X X   X X  
+     X  X   X X   X
+  XXXX  XXXXX XXXXX X

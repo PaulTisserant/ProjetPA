@@ -10,7 +10,11 @@
 #define DEC 250
 #define HAUT 100
 void update_data(world_t* world){
-
+    if (world->status = JOUER)
+    {
+        /* code */
+    
+    
         for (int i = 0; i < longueur(world->tour_terrain); i++)
         {
             sprite_t tourMur = neme_elem(i,world->tour_terrain) ;
@@ -30,21 +34,22 @@ void update_data(world_t* world){
 
 
     
-    if(world->ball.power > 0){
-        world->ball.power -- ;
+        if(world->ball.power > 0){
+            world->ball.power -- ;
+        }
     }
-   
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         apply_texture(textures->back,renderer,0,0,1280,720,0);
-
-        for (int i = 0; i < (world->colonne+2)*(world->ligne+2); i++) {
-            apply_texture(textures->tile[i],renderer,world->tile[i].x,world->tile[i].y,world->tile[i].w,world->tile[i].h,0);
+        if (world->status == JOUER){
+            for (int i = 0; i < (world->colonne+2)*(world->ligne+2); i++) {
+                apply_texture(textures->tile[i],renderer,world->tile[i].x,world->tile[i].y,world->tile[i].w,world->tile[i].h,0);
+            }
+            apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
+            apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
+            apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
+            //printf("world->arrow.angle : %lf",world->arrow.angle);
         }
-        apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
-        apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
-        apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
-        //printf("world->arrow.angle : %lf",world->arrow.angle);
 }
 
 void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
@@ -52,55 +57,97 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
     
     while(   SDL_PollEvent( evenements ) ){ 
 
-        
-        
-        switch(evenements->type)
-        {
-            case SDL_QUIT:
-                world->terminer = true; 
-            break;
+        if(world->status == JOUER){
+            
+            switch(evenements->type)
+            {
+                case SDL_QUIT:
+                    world->terminer = true; 
+                break;
 
-            case SDL_KEYDOWN:
-                switch(evenements->key.keysym.sym) {
-                    
-                    case SDLK_q:
-                        world->terminer = true; 
-                    break; 
-                    
-                    case SDLK_SPACE:
-                        pressed = true;
-                        if(world->powerPress < 20) {
-                            world->powerPress ++;
-                        }
-                    break;     
-                }
-            break;
-            case SDL_KEYUP:
+                case SDL_KEYDOWN:
+                    switch(evenements->key.keysym.sym) {
+                                            
+                        case SDLK_q:
+                            world->terminer = true; 
+                        break; 
+                        
+                        case SDLK_SPACE:
+                            pressed = true;
+                            if(world->powerPress < 20) {
+                                world->powerPress ++;
+                            }
+                        break;     
+                    }
+                break;
+                case SDL_KEYUP:
 
-                switch(evenements->key.keysym.sym) {
+                    switch(evenements->key.keysym.sym) {
 
-                    case SDLK_SPACE:
-                        //if(pressed) {
+                        case SDLK_SPACE:
                             for (int i = 0; i < world->powerPress; i++)
                             {
                                 world->ball.power += 1;
                             } 
-                       // }
+                        break; 
+                    
+                    }    
+                break;    
+                    case SDL_MOUSEBUTTONDOWN:  
+                            if (evenements->button.button == SDL_BUTTON_LEFT){
+                                display_arrow(world);
+                            }   
+                    break;    
+            
+            }
+        }
+        switch(evenements->type)
+        {
+            case SDL_KEYDOWN:
+                switch(evenements->key.keysym.sym) {
+                    case SDLK_a:
+                     printf("JOUER \n");
+                     world->status = JOUER ;
+                    break;
+
+                }
+
+
 
                         
-                    break; 
-                
-                }    
-            break;    
-            case SDL_MOUSEBUTTONDOWN:
-                
-                if (evenements->button.button == SDL_BUTTON_LEFT){
-                    display_arrow(world);
-                }
-                
-            break;    
+
         }
     }
+}
+        
+
+void apply_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+    if (world->status == LANCEMENT)
+    {
+       switch (world->page)
+       {
+       case INIT:
+                if (textures->menu == NULL)
+                {
+                    printf("null");
+                    textures->menu = charger_image("menu.bmp",renderer);
+                }
+                
+                
+                apply_texture(textures->menu,renderer,0,0,1280,720,0);
+        break;
+       case OPTION:
+       default:
+        break;
+       } 
+
+
+    }
+    
+
+
+
+
 }
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
@@ -132,11 +179,10 @@ void init_data(world_t* world){
             world->tile[srcpos].v = 0 ;
             if (j==0 || i == 0 || j >world->colonne || i >world->ligne)
             {
-                //printf("tour_terrain");
+
                 world->tour_terrain = ajouter_element(world->tile[srcpos],world->tour_terrain);
             }
             else{
-                printf("%i  ,  %i \n",i,j);
                 if ( world->terrain[i-1][j-1] == 'B') {
                     world->ball.x = 32*j + DEC;
                     world->ball.y = i*32 + HAUT;
@@ -162,7 +208,6 @@ void init_data(world_t* world){
             
         }
     }
-    printf("fininit");
     
 }
 void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
@@ -173,8 +218,8 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     texture->back = charger_image("background.bmp",renderer);
     texture->tile = malloc(sizeof(textures_t)*(world->colonne+2)*(world->ligne+2));
     //Initialisation des textures du terrain
-    SDL_Texture*  wall =charger_image("wall.bmp",renderer);
-    SDL_Texture*  grass =charger_image("grass2.bmp",renderer);
+    SDL_Texture*  wall =charger_image("wood.bmp",renderer);
+    SDL_Texture*  grass =charger_image("grass.bmp",renderer);
     SDL_Texture*  block =charger_image("block.bmp",renderer);
 
     int srcpos = 0 ;
@@ -234,7 +279,6 @@ void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
 
 void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world_t* world){
     init_data(world);
-    init_renderer(renderer,fenetre,world);
     init_textures(*renderer,texture,world);
 }
 
@@ -246,10 +290,23 @@ int main(int argc, char *argv[]){
     SDL_Event evenements; // Événements liés à la fenêtre
     world_t world;
     textures_t textures;
-    init(&renderer,&fenetre,&textures,&world);
+    world.status = LANCEMENT ;
+    world.page = INIT ;
+    textures.menu = NULL ;
+    init_renderer(&renderer,&fenetre,&world);
 
-    printf("colonne : %d \n", world.colonne*32);
-    printf("ligne : %d\n", world.ligne*32);
+    while (world.status == LANCEMENT)
+    {
+        apply_lancement(renderer,&world,&textures);
+        handle_events(&evenements,&world,&textures);
+        SDL_RenderPresent(renderer);
+
+    }
+    
+
+    init(&renderer,&fenetre,&textures,&world);
+    SDL_DestroyTexture(textures.menu);
+
     // Boucle principale
     while(!world.terminer){
         SDL_RenderClear(renderer);

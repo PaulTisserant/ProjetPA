@@ -7,6 +7,8 @@
 #include "liste.h"
 
 #define PI 3.14159265
+enum STATUS{PERDU , GAGNER , STOP , JOUER , LANCEMENT } ;
+enum PAGES{INIT,OPTION};
 
 /**
  * \brief Type qui correspond aux données du sprite
@@ -41,7 +43,8 @@ struct world_s{
     int colonne ;
     int ligne ;
     int powerPress;
-
+    enum STATUS status ;
+    enum PAGES page ;
     sprite_t ball ; /*!< balle. */
 	sprite_t* tile; /*!<Tableau de tuile. */
     sprite_t hole; /*!<Troue. */
@@ -63,6 +66,7 @@ struct textures_s{
     SDL_Texture* hole; /*!< Texture liée à l'image des adversaires. */
     SDL_Texture* arrow;  /*!< Texture liée à l'image du missile. */
     SDL_Texture* back;
+    SDL_Texture* menu ;
 };
 
 /**
