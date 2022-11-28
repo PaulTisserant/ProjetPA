@@ -102,22 +102,37 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
             }
         }
         else{
-            switch(evenements->type)
-            {
-                case SDL_KEYDOWN:
-                    switch(evenements->key.keysym.sym) {
-                        case SDLK_a:
-                        printf("JOUER \n");
+        switch(evenements->type)
+        {
+            case SDL_KEYDOWN:
+                switch(evenements->key.keysym.sym) {
+                    case SDLK_a:
+                     printf("JOUER \n");
+                     world->status = JOUER ;
+                    break;
+                    case SDLK_o:
+                     printf("options \n");
+                     textures->menu = NULL ;
+                     world->page = OPTION ;
+                    break;
+                    case SDLK_ESCAPE:
+                    if (world->page != INIT)
+                    {
+                     textures->menu = NULL ;
+                     world->page = INIT ;
+                    }
+                    else{
+                        world->terminer = true ;
                         world->status = JOUER ;
-                        break;
 
                     }
+                    
+                }
+        }
 
 
+                        
 
-                            
-
-            }
         }
     }
 }
@@ -139,6 +154,13 @@ void apply_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
         break;
        case OPTION:
+                if (textures->menu == NULL)
+                {
+                    printf("nullopt");
+                    textures->menu = charger_image("option.bmp",renderer);
+                }
+                apply_texture(textures->menu,renderer,0,0,1280,720,0);
+
        default:
         break;
        } 
@@ -295,6 +317,7 @@ int main(int argc, char *argv[]){
     world.status = LANCEMENT ;
     world.page = INIT ;
     textures.menu = NULL ;
+    world.terminer = false ;
     init_renderer(&renderer,&fenetre,&world);
 
     while (world.status == LANCEMENT)
@@ -305,9 +328,13 @@ int main(int argc, char *argv[]){
 
     }
     
+    if (!world.terminer)
+    {
+        init(&renderer,&fenetre,&textures,&world);
+        SDL_DestroyTexture(textures.menu);
+    }
+    
 
-    init(&renderer,&fenetre,&textures,&world);
-    SDL_DestroyTexture(textures.menu);
 
     // Boucle principale
     while(!world.terminer){

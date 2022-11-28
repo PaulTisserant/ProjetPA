@@ -326,5 +326,4 @@ void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
         sp2->angle = bounce;
         //sp2->power -= 2;
     }
-
 }
