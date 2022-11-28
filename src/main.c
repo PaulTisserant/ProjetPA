@@ -10,25 +10,34 @@
 #define DEC 250
 #define HAUT 100
 void update_data(world_t* world){
-    if (world->status = JOUER)
+    if (world->status == JOUER)
     {
         /* code */
+    
+
+        
     
     
         for (int i = 0; i < longueur(world->tour_terrain); i++)
         {
             sprite_t tourMur = neme_elem(i,world->tour_terrain) ;
-            handle_sprites_collision(&(world->ball),&tourMur);
+            if(handle_sprites_collision(&(world->ball),&tourMur) == 1){
+                world->terminer = true ;
+            };
         }
 
         for (int i = 0; i < longueur(world->mur); i++)
         {
             sprite_t mur = neme_elem(i,world->mur) ;
-            handle_sprites_collision(&(world->ball),&mur);
+            if(handle_sprites_collision(&(world->ball),&mur) == 1){
+                world->terminer = true ;
+            };
         }
 
 
 
+        //printf("x: %ld \n",world->ball.power * cos(world->ball.angle));
+        //printf("y :%ld\n",world->ball.power *  -sin(world->ball.angle));
         world->ball.x -= -world->ball.power * cos(world->ball.angle);
         world->ball.y -= world->ball.power *  -sin(world->ball.angle);
 
@@ -210,8 +219,8 @@ void init_data(world_t* world){
                 if ( world->terrain[i-1][j-1] == 'B') {
                     world->ball.x = 32*j + DEC;
                     world->ball.y = i*32 + HAUT;
-                    world->ball.w = 20 ;
-                    world->ball.h = 20 ;
+                    world->ball.w = 10 ;
+                    world->ball.h = 10 ;
                     world->ball.angle = 0 ;
                     world->ball.v = 10 ;
                 }

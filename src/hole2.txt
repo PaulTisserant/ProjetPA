@@ -2,10 +2,7 @@
            O         
 
                  
-  XXXX         
-  X     X   X X   X X
-  X     X   X X   X X
-  XXXX  X  BX X   X X
-     X  X   X X   X X  
-     X  X   X X   X
-  XXXX  XXXXX XXXXX X
+     X 
+   B
+
+  

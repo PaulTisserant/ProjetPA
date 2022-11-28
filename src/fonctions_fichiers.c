@@ -304,26 +304,57 @@ void display_arrow(world_t* world){
         world->arrow.angle -=PI/2;
         world->ball.angle -=PI/2;
         world->arrow.angle = world->arrow.angle * 180/PI;
+        
 }
-
+bool entre(int v1,int v2,int v3){
+ return v1<=v2 && v2<=v3 ;
+    
+}
 
 int sprites_collide(sprite_t *sp2, sprite_t *sp1){
     //Les deux sprites sont visibles
-    if ( sp1->x < sp2->x + sp2->w && sp1->x + sp1->w > sp2->x && sp1->y < sp2->y + sp2->h && sp1->h +sp1->y > sp2->y){
+        printf("ball x :%d,y:%d %d,%d : \n",sp2->x,sp2->y,sp2->h,sp2->w);
+        printf("mur : %d,%d,%d,%d \n",sp1->x,sp1->y,sp1->h,sp1->w) ;
+    if(entre(sp1->x,sp2->x,sp1->x+sp1->w) && entre(sp1->y,sp2->y,sp1->y + sp1->h)){
+        // ( sp1->x < sp2->x + sp2->w && sp1->x + sp1->w > sp2->x && sp1->y < sp2->y + sp2->h && sp1->h +sp1->y > sp2->y)
     //les deux sprites sont en collision
+        printf("0");
         return 1 ;
     }
+    if (entre(sp1->x,sp2->x + sp2->w,sp1->x+sp1->w) && entre(sp1->y,sp2->y+sp2->h,sp1->y + sp1->h))
+    {
+        printf("1");
+        return 1 ;
+    }
+    if (entre(sp1->x,sp2->x,sp1->x+sp1->w) && entre(sp1->y,sp2->y+sp2->h,sp1->y + sp1->h)){
+        printf("2");
+        return 1 ;
+    }
+    if (entre(sp1->y,sp2->y,sp1->y + sp1->h) && entre(sp1->x,sp2->x + sp2->w,sp1->x+sp1->w))
+    {
+        printf("3");
+        return 1 ;
+    }
+    
+
     return 0 ;
 }
 
 //gestion d'une collision entre deux sprites
-void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
+int  handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
 
     if ( sprites_collide(sp2,sp1) == 1 ){
+        return 1;
+        printf("avant :power :%i \n",sp2->power);
+        printf("angle :%Lf\n",sp2->angle);
         double rel = (sp1->y+(sp1->h/2))-(sp2->y+(sp2->w/2));
         double norm = rel/(sp1->h/2);
         double bounce = norm * (5*PI/12);
-        sp2->angle = bounce;
+        sp2->angle = PI/2 - sp2->angle;
         //sp2->power -= 2;
+        printf("power :%i \n",sp2->power);
+        printf("angle :%Lf\n",sp2->angle);
+        sp2->power++ ;
     }
+    return 0 ;
 }
