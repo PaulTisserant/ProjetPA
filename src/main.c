@@ -101,21 +101,23 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
             
             }
         }
-        switch(evenements->type)
-        {
-            case SDL_KEYDOWN:
-                switch(evenements->key.keysym.sym) {
-                    case SDLK_a:
-                     printf("JOUER \n");
-                     world->status = JOUER ;
-                    break;
+        else{
+            switch(evenements->type)
+            {
+                case SDL_KEYDOWN:
+                    switch(evenements->key.keysym.sym) {
+                        case SDLK_a:
+                        printf("JOUER \n");
+                        world->status = JOUER ;
+                        break;
 
-                }
+                    }
 
 
 
-                        
+                            
 
+            }
         }
     }
 }
