@@ -137,5 +137,8 @@ SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* re
 void displayHole(SDL_Rect *SrcR_fond, SDL_Rect *DestR_fond, SDL_Rect *SrcR_hole, SDL_Rect *DestR_hole, SDL_Rect *SrcR_ball, SDL_Rect *DestR_ball, const char* nomFichier);
 
 void display_arrow(world_t* world);
-int  handle_sprites_collision(sprite_t *sp2, sprite_t *sp1);
+
+void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1);
+
+int wich_side_collide(sprite_t *sp2, sprite_t *sp1);
 #endif

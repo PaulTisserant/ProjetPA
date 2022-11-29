@@ -9,37 +9,83 @@
 #define DEG 0.0174533
 #define DEC 250
 #define HAUT 100
-void update_data(world_t* world){
+
+
+void update_data(world_t* world, int dirX, int dirY, bool collision){
     if (world->status == JOUER)
     {
         /* code */
-    
 
-        
-    
-    
-        for (int i = 0; i < longueur(world->tour_terrain); i++)
+
+        /*for (int i = 0; i < longueur(world->tour_terrain); i++)
         {
             sprite_t tourMur = neme_elem(i,world->tour_terrain) ;
-            if(handle_sprites_collision(&(world->ball),&tourMur) == 1){
-                world->terminer = true ;
-            };
+            //if(handle_sprites_collision(&(world->ball),&tourMur) == 1){
+                
+            //};
+
+            int newX = world->ball.x + world->ball.power;
+            int newY = world->ball.y;
+            if (newX + 20 > tourMur.x && newX < tourMur.x + tourMur.w && newY + 20 > tourMur.y && newY < tourMur.y + tourMur.h + 3)
+            {
+                world->ball.x *= -1;
+                world->ball.y -= world->ball.power * -sin(world->ball.angle);
+            }
+
+            newX = world->ball.x;
+            newY = world->ball.y + world->ball.power;
+            if (newX + 20 > tourMur.x && newX < tourMur.x + tourMur.w && newY + 20 > tourMur.y && newY < tourMur.y + tourMur.h + 3)
+            {
+                world->ball.x -= -world->ball.power * cos(world->ball.angle);
+                world->ball.y *= -1;
+            }
+        }*/
+
+
+
+        if (!collision)
+        {
+            dirX = -world->ball.power * cos(world->ball.angle);
+            dirY = world->ball.power * -sin(world->ball.angle);
         }
+        
+
+
 
         for (int i = 0; i < longueur(world->mur); i++)
         {
             sprite_t mur = neme_elem(i,world->mur) ;
-            if(handle_sprites_collision(&(world->ball),&mur) == 1){
-                world->terminer = true ;
-            };
+            //if(handle_sprites_collision(&(world->ball),&mur) == 1){
+                //world->terminer = true ;
+            //};
+
+            int newX = world->ball.x + world->ball.power;
+            int newY = world->ball.y;
+
+            //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
+            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            {
+                dirX *= -1;
+                dirY = world->ball.power * -sin(world->ball.angle);
+                collision = true;
+            }
+
+            newX = world->ball.x;
+            newY = dirY + world->ball.power;
+            //si on augmente y (prochaine frame) et qu'il y aura une collision alors on inverse y
+            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            {
+                dirX = world->ball.power * cos(world->ball.angle);
+                dirY *= -1;
+                collision = true;
+            }
         }
 
 
-
-        //printf("x: %ld \n",world->ball.power * cos(world->ball.angle));
-        //printf("y :%ld\n",world->ball.power *  -sin(world->ball.angle));
-        world->ball.x -= -world->ball.power * cos(world->ball.angle);
-        world->ball.y -= world->ball.power *  -sin(world->ball.angle);
+        printf("x: %d \n",world->ball.x);
+        printf("y :%d\n",world->ball.y);
+        world->ball.x -= dirX;
+        world->ball.y -= dirY;
 
 
     
@@ -80,6 +126,11 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         case SDLK_q:
                             world->terminer = true; 
                         break; 
+
+                        case SDLK_r:
+                            world->ball.x = 378; 
+                            world->ball.y = 292;
+                        break; 
                         
                         case SDLK_SPACE:
                             pressed = true;
@@ -94,6 +145,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     switch(evenements->key.keysym.sym) {
 
                         case SDLK_SPACE:
+                            world->ball.power = 0;
                             for (int i = 0; i < world->powerPress; i++)
                             {
                                 world->ball.power += 1;
@@ -329,6 +381,10 @@ int main(int argc, char *argv[]){
     world.terminer = false ;
     init_renderer(&renderer,&fenetre,&world);
 
+    bool collision = false;
+    int dirX;
+    int dirY;
+
     while (world.status == LANCEMENT)
     {
         apply_lancement(renderer,&world,&textures);
@@ -350,14 +406,7 @@ int main(int argc, char *argv[]){
         SDL_RenderClear(renderer);
         refresh_graphics(renderer,&world,&textures);
         handle_events(&evenements,&world,&textures);
-        update_data(&world);
-        Uint64 currentTick = SDL_GetPerformanceCounter();
-        Uint64 lastTick = 0;
-        double deltaTime = 0;
-        int power = 0 ;
-        lastTick = currentTick;
-        currentTick = SDL_GetPerformanceCounter();
-        deltaTime = (double)((currentTick - lastTick)*1000 / (double)SDL_GetPerformanceFrequency() );
+        update_data(&world, dirX, dirY, collision);
         SDL_Delay(20);
         //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
 
