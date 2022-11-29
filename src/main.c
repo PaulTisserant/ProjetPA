@@ -61,7 +61,6 @@ void update_data(world_t* world, int dirX, int dirY, bool collision){
 
             int newX = world->ball.x + world->ball.power;
             int newY = world->ball.y;
-
             //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
             if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
             {
@@ -79,13 +78,36 @@ void update_data(world_t* world, int dirX, int dirY, bool collision){
                 dirY *= -1;
                 collision = true;
             }
+
+            newX = world->ball.x - world->ball.power;
+            newY = world->ball.y;
+            //si on diminue x (prochaine frame) et qu'il y aura une collision alors on inverse y 
+            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            {
+                dirX = world->ball.power * cos(world->ball.angle);
+                dirY *= -1;
+                collision = true;
+            }
+
+            newX = world->ball.x;
+            newY = dirY - world->ball.power;
+            //si on diminue y (prochaine frame) et qu'il y aura une collision alors on inverse x
+            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            {
+                dirX *= -1;
+                dirY = world->ball.power * -sin(world->ball.angle);
+                collision = true;
+            }
         }
 
 
-        printf("x: %d \n",world->ball.x);
-        printf("y :%d\n",world->ball.y);
+        // il faut stocker la nouvelle direction pour que dans les prochaines frame la direction ne soit plus celle de la fleche 
+        // une fois la balle arretée il faudrat reprendre la direction de la fleche 
+        
         world->ball.x -= dirX;
         world->ball.y -= dirY;
+        //printf("x: %d \n",world->ball.x);
+        //printf("y :%d\n",world->ball.y);
 
 
     
