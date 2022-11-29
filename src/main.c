@@ -187,6 +187,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
         else{
         switch(evenements->type)
         {
+
             case SDL_KEYDOWN:
                 switch(evenements->key.keysym.sym) {
                     case SDLK_a:
@@ -211,6 +212,27 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     }
                     
                 }
+            break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (evenements->button.button == SDL_BUTTON_LEFT)
+                {
+                    int posx_e = 0 ;
+                    int posy_e = 0 ;       
+                    SDL_GetMouseState(&posx_e,&posy_e); 
+                    if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
+                        world->status = JOUER ;
+                    }
+                    if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
+                     textures->menu = NULL ;
+                     world->page = OPTION ;                    
+                    }
+                    if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
+                        world->terminer = true ;
+                        world->status = JOUER ;
+                    }
+                }
+            break;
+                
         }
 
 
@@ -220,38 +242,33 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
     }
 }
         
-void update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
     int posx = 0 ;
     int posy = 0 ;       
     SDL_GetMouseState(&posx,&posy); 
-
-
-
-
-
-    if (entre(world->buttons[0].x,posx,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy,world->buttons[0].y+world->buttons[0].h)){
-        apply_texture(textures->buttons[1],renderer,world->buttons[1].x,world->buttons[1].y,world->buttons[1].w,world->buttons[1].h,0);
-
-    }
-    else{
-        apply_texture(textures->buttons[0],renderer,world->buttons[0].x,world->buttons[0].y,world->buttons[0].w,world->buttons[0].h,0);
-    }
-    if (entre(world->buttons[2].x,posx,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy,world->buttons[2].y+world->buttons[2].h)){
-        apply_texture(textures->buttons[3],renderer,world->buttons[3].x,world->buttons[3].y,world->buttons[3].w,world->buttons[3].h,0);
-
-    
-    }
-    else{
-        apply_texture(textures->buttons[2],renderer,world->buttons[2].x,world->buttons[2].y,world->buttons[2].w,world->buttons[2].h,0);
-    }
-    if (entre(world->buttons[4].x,posx,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy,world->buttons[4].y+world->buttons[4].h)){
-        apply_texture(textures->buttons[5],renderer,world->buttons[5].x,world->buttons[5].y,world->buttons[5].w,world->buttons[5].h,0);
-
-
-    }
-    else{
-        apply_texture(textures->buttons[4],renderer,world->buttons[4].x,world->buttons[4].y,world->buttons[4].w,world->buttons[4].h,0);
+    if (world->page == INIT)
+    {
+        if (entre(world->buttons[0].x,posx,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy,world->buttons[0].y+world->buttons[0].h)){
+            apply_texture(textures->buttons[1],renderer,world->buttons[1].x,world->buttons[1].y,world->buttons[1].w,world->buttons[1].h,0);
+        }
+        else{
+            apply_texture(textures->buttons[0],renderer,world->buttons[0].x,world->buttons[0].y,world->buttons[0].w,world->buttons[0].h,0);
+        }
+        if (entre(world->buttons[2].x,posx,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy,world->buttons[2].y+world->buttons[2].h)){
+            apply_texture(textures->buttons[3],renderer,world->buttons[3].x,world->buttons[3].y,world->buttons[3].w,world->buttons[3].h,0);
         
+        }
+        else{
+            apply_texture(textures->buttons[2],renderer,world->buttons[2].x,world->buttons[2].y,world->buttons[2].w,world->buttons[2].h,0);
+        }
+        if (entre(world->buttons[4].x,posx,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy,world->buttons[4].y+world->buttons[4].h)){
+            apply_texture(textures->buttons[5],renderer,world->buttons[5].x,world->buttons[5].y,world->buttons[5].w,world->buttons[5].h,0);
+
+        }
+        else{
+            apply_texture(textures->buttons[4],renderer,world->buttons[4].x,world->buttons[4].y,world->buttons[4].w,world->buttons[4].h,0);
+            
+        }
     }
 }
 void apply_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
@@ -478,8 +495,8 @@ int main(int argc, char *argv[]){
     while (world.status == LANCEMENT)
     {
         apply_lancement(renderer,&world,&textures);
-        handle_events(&evenements,&world,&textures);
         update_lancement(renderer,&world,&textures);
+        handle_events(&evenements,&world,&textures);
         SDL_RenderPresent(renderer);
 
     }
