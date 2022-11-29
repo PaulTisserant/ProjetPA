@@ -9,7 +9,7 @@
 #define PI 3.14159265
 enum STATUS{PERDU , GAGNER , STOP , JOUER , LANCEMENT } ;
 enum PAGES{INIT,OPTION};
-
+enum BUTTON{J_OFF,J_ON,O_OFF,O_ON,S_OFF,S_ON};
 /**
  * \brief Type qui correspond aux données du sprite
  */
@@ -49,6 +49,7 @@ struct world_s{
 	sprite_t* tile; /*!<Tableau de tuile. */
     sprite_t hole; /*!<Troue. */
     sprite_t arrow ; /*!<Troue.*/
+    sprite_t* buttons ;
 };
 
 /**
@@ -67,6 +68,9 @@ struct textures_s{
     SDL_Texture* arrow;  /*!< Texture liée à l'image du missile. */
     SDL_Texture* back;
     SDL_Texture* menu ;
+    SDL_Texture** buttons;
+
+
 };
 
 /**
@@ -141,4 +145,6 @@ void display_arrow(world_t* world);
 void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1);
 
 int wich_side_collide(sprite_t *sp2, sprite_t *sp1);
+
+bool entre(int v1,int v2,int v3);
 #endif
