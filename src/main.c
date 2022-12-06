@@ -11,7 +11,7 @@
 #define HAUT 100
 
 
-void update_data(world_t* world, int dirX, int dirY, bool collision){
+void update_data(world_t* world){
     if (world->status == JOUER)
     {
         /* code */
@@ -43,11 +43,12 @@ void update_data(world_t* world, int dirX, int dirY, bool collision){
 
 
 
-        if (!collision)
+        if (!world->tir)
         {
-            dirX = -world->ball.power * cos(world->ball.angle);
-            dirY = world->ball.power * -sin(world->ball.angle);
-        }
+            world->ball.dirX = -world->ball.power * cos(world->ball.angle);
+            world->ball.dirY = world->ball.power * -sin(world->ball.angle);
+            printf("%ld\n", world->ball.angle);
+        } 
         
 
 
@@ -64,50 +65,47 @@ void update_data(world_t* world, int dirX, int dirY, bool collision){
             //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
             if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
             {
-                dirX *= -1;
-                dirY = world->ball.power * -sin(world->ball.angle);
-                collision = true;
+                world->ball.dirX *= -1;
+                world->tir = true;
             }
 
             newX = world->ball.x;
-            newY = dirY + world->ball.power;
-            //si on augmente y (prochaine frame) et qu'il y aura une collision alors on inverse y
+            newY = world->ball.dirY + world->ball.power;
+            //si on augmente y (prochaine frame) et qu'il y aura une world->tir alors on inverse y
             if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
             {
-                dirX = world->ball.power * cos(world->ball.angle);
-                dirY *= -1;
-                collision = true;
+                world->ball.dirY *= -1;
+                world->tir = true;
             }
 
             newX = world->ball.x - world->ball.power;
             newY = world->ball.y;
-            //si on diminue x (prochaine frame) et qu'il y aura une collision alors on inverse y 
+            //si on diminue x (prochaine frame) et qu'il y aura une world->tir alors on inverse y 
             if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
             {
-                dirX = world->ball.power * cos(world->ball.angle);
-                dirY *= -1;
-                collision = true;
+                world->ball.dirY *= -1;
+                world->tir = true;
             }
 
             newX = world->ball.x;
-            newY = dirY - world->ball.power;
-            //si on diminue y (prochaine frame) et qu'il y aura une collision alors on inverse x
+            newY = world->ball.dirY - world->ball.power;
+            //si on diminue y (prochaine frame) et qu'il y aura une world->tir alors on inverse x
             if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
             {
-                dirX *= -1;
-                dirY = world->ball.power * -sin(world->ball.angle);
-                collision = true;
+                world->ball.dirX *= -1;
+                world->tir = true;
             }
         }
 
 
         // il faut stocker la nouvelle direction pour que dans les prochaines frame la direction ne soit plus celle de la fleche 
         // une fois la balle arretée il faudrat reprendre la direction de la fleche 
-        
-        world->ball.x -= dirX;
-        world->ball.y -= dirY;
-        //printf("x: %d \n",world->ball.x);
-        //printf("y :%d\n",world->ball.y);
+        printf("x: %ld \n",world->ball.dirX);
+        printf("y :%ld\n",world->ball.dirY);
+
+        world->ball.x -= world->ball.dirX;
+        world->ball.y -= world->ball.dirY;
+
 
 
     
@@ -171,6 +169,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     switch(evenements->key.keysym.sym) {
 
                         case SDLK_SPACE:
+                            world->tir = false;
                             world->ball.power = 0;
                             for (int i = 0; i < world->powerPress; i++)
                             {
@@ -318,11 +317,13 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     printf("init data \n");
-
+    world->tir = false;
     world->arrow.angle = 0 ;
     world->ball.power = 0 ;
     world->powerPress = 5 ;
     world->terminer = false ;
+    world->ball.dirX = 0;
+    world->ball.dirY = 0;
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;
@@ -502,9 +503,7 @@ int main(int argc, char *argv[]){
     
     world.terminer = false ;
 
-    bool collision = false;
-    int dirX;
-    int dirY;
+
     world.init = false ;
 
     
@@ -535,7 +534,7 @@ int main(int argc, char *argv[]){
         SDL_RenderClear(renderer);
         refresh_graphics(renderer,&world,&textures);
         handle_events(&evenements,&world,&textures);
-        update_data(&world, dirX, dirY, collision);
+        update_data(&world);
         SDL_Delay(20);
         //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
 

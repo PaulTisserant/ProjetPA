@@ -25,6 +25,8 @@ struct sprite_s{
     int h; /*!< Dimension en hauteur. */
     int v; /*!< Vitesse. */
     int power ;
+    double dirX;
+    double dirY;
     double angle ; /*!<Vitesse. */
     int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
 
@@ -36,6 +38,7 @@ typedef struct Liste *liste ;
  * \brief Représentation du monde du jeu
 */
 struct world_s{
+    bool tir;
     int terminer ;
     char** terrain;
     liste mur ;
