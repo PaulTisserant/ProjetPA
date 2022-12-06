@@ -9,7 +9,7 @@
 #define DEG 0.0174533
 #define DEC 250
 #define HAUT 100
-
+#define ball_size 10
 
 void update_data(world_t* world){
     if (world->status == JOUER)
@@ -63,37 +63,44 @@ void update_data(world_t* world){
             int newX = world->ball.x + world->ball.power;
             int newY = world->ball.y;
             //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
-            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
             {
                 world->ball.dirX *= -1;
                 world->tir = true;
+                
+                world->ball.power-- ;
+                
             }
 
             newX = world->ball.x;
             newY = world->ball.dirY + world->ball.power;
             //si on augmente y (prochaine frame) et qu'il y aura une world->tir alors on inverse y
-            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
             {
                 world->ball.dirY *= -1;
                 world->tir = true;
+                world->ball.power-- ;
+
             }
 
             newX = world->ball.x - world->ball.power;
             newY = world->ball.y;
             //si on diminue x (prochaine frame) et qu'il y aura une world->tir alors on inverse y 
-            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
+            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
             {
                 world->ball.dirY *= -1;
                 world->tir = true;
+                world->ball.power-- ;
             }
 
             newX = world->ball.x;
             newY = world->ball.dirY - world->ball.power;
             //si on diminue y (prochaine frame) et qu'il y aura une world->tir alors on inverse x
-            if (newX + 20 > mur.x && newX < mur.x + mur.w && newY + 20 > mur.y && newY < mur.y + mur.h)
-            {
+            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
+            { 
                 world->ball.dirX *= -1;
-                world->tir = true;
+                world->tir = true;   
+                world->ball.power-- ;      
             }
         }
 
@@ -102,9 +109,13 @@ void update_data(world_t* world){
         // une fois la balle arretée il faudrat reprendre la direction de la fleche 
         printf("x: %ld \n",world->ball.dirX);
         printf("y :%ld\n",world->ball.dirY);
+        if (world->ball.power > 0)
+        {
+        world->ball.x -= world->ball.dirX * 0.8;
+        world->ball.y -= world->ball.dirY * 0.8;
+        }
+        
 
-        world->ball.x -= world->ball.dirX;
-        world->ball.y -= world->ball.dirY;
 
 
 
@@ -321,7 +332,6 @@ void init_data(world_t* world){
     world->arrow.angle = 0 ;
     world->ball.power = 0 ;
     world->powerPress = 5 ;
-    world->terminer = false ;
     world->ball.dirX = 0;
     world->ball.dirY = 0;
     int col = 0;

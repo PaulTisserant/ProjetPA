@@ -13,25 +13,7 @@ enum BUTTON{J_OFF,J_ON,O_OFF,O_ON,S_OFF,S_ON};
 /**
  * \brief Type qui correspond aux données du sprite
  */
-typedef struct sprite_s sprite_t;
-/**
- * \brief Représentation des sprites du jeu
-*/
 
-struct sprite_s{
-    int x; /*!< Coordonnée en abscisse. */
-    int y; /*!< Coordonnée en ordonnée. */
-    int w; /*!< Dimension en largeur. */
-    int h; /*!< Dimension en hauteur. */
-    int v; /*!< Vitesse. */
-    int power ;
-    double dirX;
-    double dirY;
-    double angle ; /*!<Vitesse. */
-    int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
-
-};
-typedef struct Liste *liste ; 
 
 
 /**
@@ -113,7 +95,7 @@ void afficher_tab_2D(char** tab, int n, int m);
  compter le nombre max de lignes (nbLig) et de colonnes (nbCol) dans le fichier dont le nom est nomFichier
 */
 void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol);
-
+void apply_texture(SDL_Texture *texture,SDL_Renderer *renderer,int x, int y,int w,int h,double angle);
 
 /*
  lire un fichier dont le nom est nomFichier

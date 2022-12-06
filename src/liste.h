@@ -6,8 +6,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "fonctions_fichiers.h"
+typedef struct sprite_s sprite_t;
+/**
+ * \brief Représentation des sprites du jeu
+*/
+struct sprite_s{
+    int x; /*!< Coordonnée en abscisse. */
+    int y; /*!< Coordonnée en ordonnée. */
+    int w; /*!< Dimension en largeur. */
+    int h; /*!< Dimension en hauteur. */
+    int v; /*!< Vitesse. */
+    int power ;
+    double dirX;
+    double dirY;
+    double angle ; /*!<Vitesse. */
+    int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
 
+};
 /* Definitions des types */
 typedef struct Liste *liste ; 
 struct Liste {
