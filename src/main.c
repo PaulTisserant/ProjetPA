@@ -17,29 +17,56 @@ void update_data(world_t* world){
         /* code */
 
 
-        /*for (int i = 0; i < longueur(world->tour_terrain); i++)
+        for (int i = 0; i < longueur(world->tour_terrain); i++)
         {
-            sprite_t tourMur = neme_elem(i,world->tour_terrain) ;
-            //if(handle_sprites_collision(&(world->ball),&tourMur) == 1){
-                
+            sprite_t tourmur = neme_elem(i,world->tour_terrain) ;
+            //if(handle_sprites_collision(&(world->ball),&mur) == 1){
+                //world->terminer = true ;
             //};
 
             int newX = world->ball.x + world->ball.power;
             int newY = world->ball.y;
-            if (newX + 20 > tourMur.x && newX < tourMur.x + tourMur.w && newY + 20 > tourMur.y && newY < tourMur.y + tourMur.h + 3)
+            //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
+            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
             {
-                world->ball.x *= -1;
-                world->ball.y -= world->ball.power * -sin(world->ball.angle);
+                world->ball.dirX *= -1;
+                world->tir = true;
+                
+                world->ball.power-- ;
+                
             }
 
             newX = world->ball.x;
-            newY = world->ball.y + world->ball.power;
-            if (newX + 20 > tourMur.x && newX < tourMur.x + tourMur.w && newY + 20 > tourMur.y && newY < tourMur.y + tourMur.h + 3)
+            newY = world->ball.dirY + world->ball.power;
+            //si on augmente y (prochaine frame) et qu'il y aura une world->tir alors on inverse y
+            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
             {
-                world->ball.x -= -world->ball.power * cos(world->ball.angle);
-                world->ball.y *= -1;
+                world->ball.dirY *= -1;
+                world->tir = true;
+                world->ball.power-- ;
+
             }
-        }*/
+
+            newX = world->ball.x - world->ball.power;
+            newY = world->ball.y;
+            //si on diminue x (prochaine frame) et qu'il y aura une world->tir alors on inverse y 
+            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
+            {
+                world->ball.dirY *= -1;
+                world->tir = true;
+                world->ball.power-- ;
+            }
+
+            newX = world->ball.x;
+            newY = world->ball.dirY - world->ball.power;
+            //si on diminue y (prochaine frame) et qu'il y aura une world->tir alors on inverse x
+            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
+            { 
+                world->ball.dirX *= -1;
+                world->tir = true;   
+                world->ball.power-- ;      
+            }
+        }
 
 
 
