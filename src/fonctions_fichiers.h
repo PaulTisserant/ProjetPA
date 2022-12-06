@@ -7,7 +7,7 @@
 #include "liste.h"
 
 #define PI 3.14159265
-enum STATUS{PERDU , GAGNER , STOP , JOUER , LANCEMENT } ;
+enum STATUS{PERDU , GAGNER , PAUSE , JOUER , LANCEMENT } ;
 enum PAGES{INIT,OPTION};
 enum BUTTON{J_OFF,J_ON,O_OFF,O_ON,S_OFF,S_ON};
 /**
@@ -50,6 +50,7 @@ struct world_s{
     sprite_t hole; /*!<Troue. */
     sprite_t arrow ; /*!<Troue.*/
     sprite_t* buttons ;
+    bool init ;
 };
 
 /**

@@ -159,7 +159,11 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
                             }
-                        break;     
+                        break;  
+                        case SDLK_ESCAPE:
+                            world->status = PAUSE ;
+                            printf("escape");
+                        break;   
                     }
                 break;
                 case SDL_KEYUP:
@@ -216,20 +220,25 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
             case SDL_MOUSEBUTTONDOWN:
                 if (evenements->button.button == SDL_BUTTON_LEFT)
                 {
+
                     int posx_e = 0 ;
                     int posy_e = 0 ;       
                     SDL_GetMouseState(&posx_e,&posy_e); 
-                    if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
-                        world->status = JOUER ;
+                    if (world->page == INIT)
+                    {
+                        if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
+                            world->status = JOUER ;
+                        }
+                        if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
+                        textures->menu = NULL ;
+                        world->page = OPTION ;                    
+                        }
+                        if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
+                            world->terminer = true ;
+                            world->status = JOUER ;
+                        }
                     }
-                    if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
-                     textures->menu = NULL ;
-                     world->page = OPTION ;                    
-                    }
-                    if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
-                        world->terminer = true ;
-                        world->status = JOUER ;
-                    }
+                    
                 }
             break;
                 
@@ -243,36 +252,9 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 }
         
 int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
-    int posx = 0 ;
-    int posy = 0 ;       
-    SDL_GetMouseState(&posx,&posy); 
-    if (world->page == INIT)
-    {
-        if (entre(world->buttons[0].x,posx,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy,world->buttons[0].y+world->buttons[0].h)){
-            apply_texture(textures->buttons[1],renderer,world->buttons[1].x,world->buttons[1].y,world->buttons[1].w,world->buttons[1].h,0);
-        }
-        else{
-            apply_texture(textures->buttons[0],renderer,world->buttons[0].x,world->buttons[0].y,world->buttons[0].w,world->buttons[0].h,0);
-        }
-        if (entre(world->buttons[2].x,posx,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy,world->buttons[2].y+world->buttons[2].h)){
-            apply_texture(textures->buttons[3],renderer,world->buttons[3].x,world->buttons[3].y,world->buttons[3].w,world->buttons[3].h,0);
-        
-        }
-        else{
-            apply_texture(textures->buttons[2],renderer,world->buttons[2].x,world->buttons[2].y,world->buttons[2].w,world->buttons[2].h,0);
-        }
-        if (entre(world->buttons[4].x,posx,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy,world->buttons[4].y+world->buttons[4].h)){
-            apply_texture(textures->buttons[5],renderer,world->buttons[5].x,world->buttons[5].y,world->buttons[5].w,world->buttons[5].h,0);
 
-        }
-        else{
-            apply_texture(textures->buttons[4],renderer,world->buttons[4].x,world->buttons[4].y,world->buttons[4].w,world->buttons[4].h,0);
-            
-        }
-    }
-}
-void apply_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
-    if (world->status == LANCEMENT)
+
+        if (world->status == LANCEMENT)
     {
        switch (world->page)
        {
@@ -304,11 +286,35 @@ void apply_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 
     }
     
+    int posx = 0 ;
+    int posy = 0 ;       
+    SDL_GetMouseState(&posx,&posy); 
+    if (world->page == INIT)
+    {
+        if (entre(world->buttons[0].x,posx,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy,world->buttons[0].y+world->buttons[0].h)){
+            apply_texture(textures->buttons[1],renderer,world->buttons[1].x,world->buttons[1].y,world->buttons[1].w,world->buttons[1].h,0);
+        }
+        else{
+            apply_texture(textures->buttons[0],renderer,world->buttons[0].x,world->buttons[0].y,world->buttons[0].w,world->buttons[0].h,0);
+        }
+        if (entre(world->buttons[2].x,posx,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy,world->buttons[2].y+world->buttons[2].h)){
+            apply_texture(textures->buttons[3],renderer,world->buttons[3].x,world->buttons[3].y,world->buttons[3].w,world->buttons[3].h,0);
+        
+        }
+        else{
+            apply_texture(textures->buttons[2],renderer,world->buttons[2].x,world->buttons[2].y,world->buttons[2].w,world->buttons[2].h,0);
+        }
+        if (entre(world->buttons[4].x,posx,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy,world->buttons[4].y+world->buttons[4].h)){
+            apply_texture(textures->buttons[5],renderer,world->buttons[5].x,world->buttons[5].y,world->buttons[5].w,world->buttons[5].h,0);
 
-
-
-
+        }
+        else{
+            apply_texture(textures->buttons[4],renderer,world->buttons[4].x,world->buttons[4].y,world->buttons[4].w,world->buttons[4].h,0);
+            
+        }
+    }
 }
+
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     printf("init data \n");
@@ -320,14 +326,14 @@ void init_data(world_t* world){
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;
-    taille_fichier("hole2.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
+    taille_fichier("hole.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
     printf("ligne : %i,col:%i",col,ligne);
     world->tile = malloc(sizeof(sprite_t)*(world->colonne+2)*(world->ligne+2)) ;
     world->mur = l_vide() ;
     world->tour_terrain = l_vide() ;
-    world->terrain = lire_fichier("hole2.txt");              
+    world->terrain = lire_fichier("hole.txt");              
     for (int i = 0; i < world->ligne+2; i++) {
         for (int j = 0; j < world->colonne+2; j++) {      
 
@@ -381,6 +387,8 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     SDL_Texture*  wall =charger_image("wood.bmp",renderer);
     SDL_Texture*  grass =charger_image("grass.bmp",renderer);
     SDL_Texture*  block =charger_image("block.bmp",renderer);
+    SDL_Texture*  water =charger_image("water.bmp",renderer);
+
 
     int srcpos = 0 ;
     for (int i = 0; i < world->ligne+2; i++) {
@@ -399,6 +407,9 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
                 if (world->terrain[i-1][j-1] == 'X') {
                     texture->tile[srcpos] = wall;
                 }
+                if (world->terrain[i-1][j-1] == 'W') {
+                    texture->tile[srcpos] = water;
+                }
             }
             /*
             world->tile[srcpos].x = 32*j ;
@@ -413,6 +424,9 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     }    
     printf("Init texture terminer");
 
+}
+void init_lancement(SDL_Renderer* renderer,world_t* world,textures_t* texture){
+    
 }
 void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
     printf("init renderer \n");
@@ -458,12 +472,12 @@ int main(int argc, char *argv[]){
     world.buttons = malloc(sizeof(sprite_t)*6);
     textures.buttons = malloc(sizeof(textures_t)*6);
     
-    textures.buttons[0] = charger_image_transparente("jouer_b.bmp",renderer,5,2,2) ;
-    textures.buttons[1] = charger_image_transparente("jouer_r.bmp",renderer,5,2,2) ;
-    textures.buttons[2] = charger_image_transparente("opt_b.bmp",renderer,5,2,2) ;
-    textures.buttons[3] = charger_image_transparente("opt_r.bmp",renderer,5,2,2) ;
-    textures.buttons[4] = charger_image_transparente("stop_b.bmp",renderer,5,2,2) ;
-    textures.buttons[5] = charger_image_transparente("stop_r.bmp",renderer,5,2,2) ;
+    textures.buttons[0] = charger_image_transparente("jouer_b.bmp",renderer,255,255,255) ;
+    textures.buttons[1] = charger_image_transparente("jouer_r.bmp",renderer,255,255,255) ;
+    textures.buttons[2] = charger_image_transparente("opt_b.bmp",renderer,255,255,255) ;
+    textures.buttons[3] = charger_image_transparente("opt_r.bmp",renderer,255,255,255) ;
+    textures.buttons[4] = charger_image_transparente("stop_b.bmp",renderer,255,255,255) ;
+    textures.buttons[5] = charger_image_transparente("stop_r.bmp",renderer,255,255,255) ;
     
     int scr = 0 ;
     for (size_t i = 0; i < 3; i++)
@@ -491,26 +505,33 @@ int main(int argc, char *argv[]){
     bool collision = false;
     int dirX;
     int dirY;
+    world.init = false ;
 
-    while (world.status == LANCEMENT)
-    {
-        apply_lancement(renderer,&world,&textures);
-        update_lancement(renderer,&world,&textures);
-        handle_events(&evenements,&world,&textures);
-        SDL_RenderPresent(renderer);
-
-    }
     
-    if (!world.terminer)
-    {
-        init(&renderer,&fenetre,&textures,&world);
-        SDL_DestroyTexture(textures.menu);
-    }
+
     
 
 
     // Boucle principale
     while(!world.terminer){
+        while (world.status == LANCEMENT)
+        {
+            update_lancement(renderer,&world,&textures);
+            handle_events(&evenements,&world,&textures);
+            SDL_RenderPresent(renderer);
+        }
+        if(!world.init){
+            init(&renderer,&fenetre,&textures,&world);
+            world.init = true ;
+        }
+        while (world.status == PAUSE)
+        {
+            handle_events(&evenements,&world,&textures);
+            SDL_RenderPresent(renderer);
+        }
+        
+        if (!world.terminer)
+        {
         SDL_RenderClear(renderer);
         refresh_graphics(renderer,&world,&textures);
         handle_events(&evenements,&world,&textures);
@@ -521,6 +542,7 @@ int main(int argc, char *argv[]){
   
 
         SDL_RenderPresent(renderer);
+        }
     }
 
 
