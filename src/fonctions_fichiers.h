@@ -7,7 +7,7 @@
 #include "liste.h"
 
 #define PI 3.14159265
-enum STATUS{PERDU , GAGNER , PAUSE , JOUER , LANCEMENT } ;
+enum STATUS{PERDU , GAGNER , PAUSE , JOUER , LANCEMENT ,SAUVEGARDER} ;
 enum PAGES{INIT,OPTION};
 enum BUTTON{J_OFF,J_ON,O_OFF,O_ON,S_OFF,S_ON};
 /**
@@ -28,6 +28,7 @@ struct world_s{
     int colonne ;
     int ligne ;
     int powerPress;
+    int nbCoups ;
     enum STATUS status ;
     enum PAGES page ;
     sprite_t ball ; /*!< balle. */
@@ -35,6 +36,10 @@ struct world_s{
     sprite_t hole; /*!<Troue. */
     sprite_t arrow ; /*!<Troue.*/
     sprite_t* buttons ;
+    sprite_t sauv ;
+    sprite_t pause ;
+    sprite_t reprendre ;
+    sprite_t quitte ;
     bool init ;
 };
 
@@ -55,6 +60,14 @@ struct textures_s{
     SDL_Texture* back;
     SDL_Texture* menu ;
     SDL_Texture** buttons;
+    SDL_Texture* pause ;
+    SDL_Texture* sauv_a;
+    SDL_Texture* sauv ;
+    SDL_Texture* reprendre ;
+    SDL_Texture* reprendre_a ;
+    SDL_Texture* quitte ;
+
+
 
 
 };
@@ -133,4 +146,6 @@ void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1);
 int wich_side_collide(sprite_t *sp2, sprite_t *sp1);
 
 bool entre(int v1,int v2,int v3);
+
+bool pointeur_collision(sprite_t sp1);
 #endif

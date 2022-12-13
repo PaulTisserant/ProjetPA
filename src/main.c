@@ -134,8 +134,8 @@ void update_data(world_t* world){
 
         // il faut stocker la nouvelle direction pour que dans les prochaines frame la direction ne soit plus celle de la fleche 
         // une fois la balle arretée il faudrat reprendre la direction de la fleche 
-        printf("x: %ld \n",world->ball.dirX);
-        printf("y :%ld\n",world->ball.dirY);
+        //printf("x: %ld \n",world->ball.dirX);
+        //printf("y :%ld\n",world->ball.dirY);
         if (world->ball.power > 0)
         {
         world->ball.x -= world->ball.dirX * 0.8;
@@ -196,9 +196,9 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                                 world->powerPress ++;
                             }
                         break;  
-                        case SDLK_ESCAPE:
+                        case SDLK_p:
                             world->status = PAUSE ;
-                            printf("escape");
+                            printf("p");
                         break;   
                     }
                 break;
@@ -213,6 +213,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                             {
                                 world->ball.power += 1;
                             } 
+                            world->nbCoups++ ;
                         break; 
                     
                     }    
@@ -225,74 +226,104 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
             
             }
         }
-        else{
-        switch(evenements->type)
+        if (world->status == PAUSE)
         {
-
+            switch (evenements->type)
+            {
             case SDL_KEYDOWN:
                 switch(evenements->key.keysym.sym) {
-                    case SDLK_a:
-                     printf("JOUER \n");
-                     world->status = JOUER ;
-                    break;
-                    case SDLK_o:
-                     printf("options \n");
-                     textures->menu = NULL ;
-                     world->page = OPTION ;
-                    break;
                     case SDLK_ESCAPE:
-                    if (world->page != INIT)
-                    {
-                     textures->menu = NULL ;
-                     world->page = INIT ;
-                    }
-                    else{
-                        world->terminer = true ;
+                        printf("Jouer");
+                        world->status = JOUER ;
+                        break;
+
+
+                }
+            break;
+             case SDL_MOUSEBUTTONDOWN:
+                if (evenements->button.button == SDL_BUTTON_LEFT)
+                {
+                    if(pointeur_collision(world->reprendre)){
+
                         world->status = JOUER ;
 
                     }
-                    
-                }
-            break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (evenements->button.button == SDL_BUTTON_LEFT)
-                {
+                    if(pointeur_collision(world->sauv)){
 
-                    int posx_e = 0 ;
-                    int posy_e = 0 ;       
-                    SDL_GetMouseState(&posx_e,&posy_e); 
-                    if (world->page == INIT)
-                    {
-                        if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
-                            world->status = JOUER ;
-                        }
-                        if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
+                        world->status = LANCEMENT ;
+                    }
+                }
+
+            }
+        }
+        if(world->status == LANCEMENT){
+            switch(evenements->type)
+            {
+
+                case SDL_KEYDOWN:
+                    switch(evenements->key.keysym.sym) {
+                        case SDLK_a:
+                        printf("JOUER \n");
+                        world->status = JOUER ;
+                        break;
+                        case SDLK_o:
+                        printf("options \n");
                         textures->menu = NULL ;
-                        world->page = OPTION ;                    
+                        world->page = OPTION ;
+                        break;
+                        case SDLK_ESCAPE:
+                        if (world->page != INIT)
+                        {
+                        textures->menu = NULL ;
+                        world->page = INIT ;
                         }
-                        if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
+                        else{
                             world->terminer = true ;
                             world->status = JOUER ;
+
                         }
-                    }
-                    
-                }
-            break;
-                
-        }
-
-
                         
+                    }
+                break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if (evenements->button.button == SDL_BUTTON_LEFT)
+                    {
 
+                        int posx_e = 0 ;
+                        int posy_e = 0 ;       
+                        SDL_GetMouseState(&posx_e,&posy_e); 
+                        if (world->page == INIT)
+                        {
+                            if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
+                                world->status = JOUER ;
+                            }
+                            if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
+                            textures->menu = NULL ;
+                            world->page = OPTION ;                    
+                            }
+                            if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
+                                printf("finn");
+                                world->terminer = true ;
+                                world->status = JOUER ;
+                            }
+                        }
+                        
+                    }
+                break;
+                    
+            }
         }
+
+        
     }
 }
         
 int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
 
 
-        if (world->status == LANCEMENT)
+    if (world->status == LANCEMENT)
     {
+        printf("lancement");
        switch (world->page)
        {
        case INIT:
@@ -328,20 +359,20 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
     SDL_GetMouseState(&posx,&posy); 
     if (world->page == INIT)
     {
-        if (entre(world->buttons[0].x,posx,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy,world->buttons[0].y+world->buttons[0].h)){
+        if (pointeur_collision(world->buttons[0])){
             apply_texture(textures->buttons[1],renderer,world->buttons[1].x,world->buttons[1].y,world->buttons[1].w,world->buttons[1].h,0);
         }
         else{
             apply_texture(textures->buttons[0],renderer,world->buttons[0].x,world->buttons[0].y,world->buttons[0].w,world->buttons[0].h,0);
         }
-        if (entre(world->buttons[2].x,posx,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy,world->buttons[2].y+world->buttons[2].h)){
+        if (pointeur_collision(world->buttons[2])){
             apply_texture(textures->buttons[3],renderer,world->buttons[3].x,world->buttons[3].y,world->buttons[3].w,world->buttons[3].h,0);
         
         }
         else{
             apply_texture(textures->buttons[2],renderer,world->buttons[2].x,world->buttons[2].y,world->buttons[2].w,world->buttons[2].h,0);
         }
-        if (entre(world->buttons[4].x,posx,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy,world->buttons[4].y+world->buttons[4].h)){
+        if (pointeur_collision(world->buttons[4])){
             apply_texture(textures->buttons[5],renderer,world->buttons[5].x,world->buttons[5].y,world->buttons[5].w,world->buttons[5].h,0);
 
         }
@@ -459,7 +490,12 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
             */
             srcpos++ ;
         }
-    }    
+    }   
+
+
+
+
+     
     printf("Init texture terminer");
 
 }
@@ -492,7 +528,33 @@ void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
 void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world_t* world){
     init_data(world);
     init_textures(*renderer,texture,world);
+
 }
+void gestion_pause(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+    if(world->status == PAUSE){
+        apply_texture(textures->pause,renderer,world->pause.x,world->pause.y,world->pause.w ,world->pause.h,0.0 );
+        if(pointeur_collision(world->sauv)){
+            apply_texture(textures->sauv_a,renderer,world->sauv.x,world->sauv.y,world->sauv.w ,world->sauv.h,0.0 );
+        }
+        else{
+            apply_texture(textures->sauv,renderer,world->sauv.x,world->sauv.y,world->sauv.w ,world->sauv.h,0.0 );
+        }
+        if (pointeur_collision(world->reprendre))
+        {
+            apply_texture(textures->reprendre_a,renderer,world->reprendre.x,world->reprendre.y,world->reprendre.w ,world->reprendre.h,0.0 );
+        }
+        else{
+            apply_texture(textures->reprendre,renderer,world->reprendre.x,world->reprendre.y,world->reprendre.w ,world->reprendre.h,0.0 );
+
+        }
+
+    }
+}
+
+
+
+
+
 
 int main(int argc, char *argv[]){
 
@@ -506,17 +568,40 @@ int main(int argc, char *argv[]){
     world.page = INIT ;
     textures.menu = NULL ;
     init_renderer(&renderer,&fenetre,&world);
-
-    world.buttons = malloc(sizeof(sprite_t)*6);
     textures.buttons = malloc(sizeof(textures_t)*6);
-    
     textures.buttons[0] = charger_image_transparente("jouer_b.bmp",renderer,255,255,255) ;
     textures.buttons[1] = charger_image_transparente("jouer_r.bmp",renderer,255,255,255) ;
     textures.buttons[2] = charger_image_transparente("opt_b.bmp",renderer,255,255,255) ;
     textures.buttons[3] = charger_image_transparente("opt_r.bmp",renderer,255,255,255) ;
     textures.buttons[4] = charger_image_transparente("stop_b.bmp",renderer,255,255,255) ;
     textures.buttons[5] = charger_image_transparente("stop_r.bmp",renderer,255,255,255) ;
+    world.buttons = malloc(sizeof(sprite_t)*6);
+
+    textures.sauv = charger_image_transparente("sauv_v.bmp",renderer,77, 93, 70);
+    textures.sauv_a = charger_image_transparente("sauv_r.bmp",renderer,77, 93, 70);
+
     
+    textures.reprendre = charger_image_transparente("reprendre_v.bmp",renderer,77, 93, 70);
+    textures.reprendre_a = charger_image_transparente("reprendre_r.bmp",renderer,77, 93, 70);
+
+    textures.pause = charger_image_transparente("pause.bmp",renderer,255,255,255);
+
+
+
+
+    // INitialisations des textures des menus
+    world.pause.y = 595;
+    world.pause.x = 0 ;
+    world.pause.w = 1280 ;
+    world.pause.h = 125;
+    world.sauv.x = 440;
+    world.sauv.w = 400 ;
+    world.sauv.h = 100 ;
+    world.sauv.y = world.pause.y + 14;
+    world.reprendre.x = 874 ;
+    world.reprendre.y = world.pause.y + 14;
+    world.reprendre.w = 400 ;
+    world.reprendre.h = 100 ;
     int scr = 0 ;
     for (size_t i = 0; i < 3; i++)
         {
@@ -562,26 +647,31 @@ int main(int argc, char *argv[]){
         }
         while (world.status == PAUSE)
         {
+            gestion_pause(renderer,&world,&textures);
             handle_events(&evenements,&world,&textures);
             SDL_RenderPresent(renderer);
         }
         
         if (!world.terminer)
         {
-        SDL_RenderClear(renderer);
-        refresh_graphics(renderer,&world,&textures);
-        handle_events(&evenements,&world,&textures);
-        update_data(&world);
-        SDL_Delay(20);
-        //SDL_RenderCopyEx(renderer, arrow,&SrcR_arrow,&DestR_arrow,angle * 180/3.14159,NULL,SDL_FLIP_NONE);
+            if (world.status == JOUER)
+            {
+                SDL_RenderClear(renderer);
+                refresh_graphics(renderer,&world,&textures);
+                handle_events(&evenements,&world,&textures);
+                update_data(&world);
+                
+            }
 
   
-
+        SDL_Delay(20);
         SDL_RenderPresent(renderer);
         }
     }
+    free(&textures);
 
 
+    printf("%i",world.nbCoups);
     // Libérer de la mémoire
     SDL_DestroyTexture(textures.hole);
     SDL_DestroyTexture(textures.ball);

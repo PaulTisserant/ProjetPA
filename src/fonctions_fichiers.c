@@ -365,7 +365,16 @@ int wich_side_collide(sprite_t *sp2, sprite_t *sp1){
     
     return 0;
 }
+bool pointeur_collision(sprite_t sp1){
+    int posx = 0 ;
+    int posy = 0 ;       
+    SDL_GetMouseState(&posx,&posy); 
+    if (entre(sp1.x,posx,sp1.x+sp1.w) && entre(sp1.y,posy,sp1.y+sp1.h)){
+        return true ;
+    }
+    return false;
 
+}
 //gestion d'une collision entre deux sprites
 void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
 
