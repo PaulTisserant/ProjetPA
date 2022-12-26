@@ -419,3 +419,25 @@ void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
 
 
 }
+
+
+
+
+// fonction pour enregistrer les champs d'une structure world_s dans un fichier texte
+void enregistrer_world_s(const char *nom_fichier, const struct world_s *world)
+{
+  // ouvrir le fichier en mode écriture
+  FILE *fichier = fopen(nom_fichier, "w");
+
+  if (fichier != NULL)
+  {
+    // écrire les valeurs des champs de la structure dans le fichier
+    fprintf(fichier, "ball_x : %d\n", world->ball.x);
+    fprintf(fichier, "ball_y : %d\n", world->ball.y);
+    fprintf(fichier, "nbCoups: %d\n", world->nbCoups);
+
+
+    // fermer le fichier
+    fclose(fichier);
+  }
+}

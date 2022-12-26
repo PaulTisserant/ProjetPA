@@ -249,7 +249,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 
                     }
                     if(pointeur_collision(world->sauv)){
-
+                        enregistrer_world_s("test",world);
                         world->status = LANCEMENT ;
                     }
                 }
@@ -392,6 +392,7 @@ void init_data(world_t* world){
     world->powerPress = 5 ;
     world->ball.dirX = 0;
     world->ball.dirY = 0;
+    world->nbCoups = 0 ;
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;
