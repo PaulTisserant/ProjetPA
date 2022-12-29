@@ -74,7 +74,7 @@ void update_data(world_t* world){
         {
             world->ball.dirX = -world->ball.power * cos(world->ball.angle);
             world->ball.dirY = world->ball.power * -sin(world->ball.angle);
-            printf("%ld\n", world->ball.angle);
+            //printf("%ld\n", world->ball.angle);
         } 
         
 
@@ -150,9 +150,15 @@ void update_data(world_t* world){
         if(world->ball.power > 0){
             world->ball.power -- ;
         }
+        if (world->powerPress == 0)
+        {
+            world->rect.w = 10 ;
+        }
+        
     }
 }
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+
         apply_texture(textures->back,renderer,0,0,1280,720,0);
         if (world->status == JOUER){
             for (int i = 0; i < (world->colonne+2)*(world->ligne+2); i++) {
@@ -161,6 +167,8 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             apply_texture(textures->ball,renderer,world->ball.x,world->ball.y,world->ball.w,world->ball.h,0);
             apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
             apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderFillRect(renderer, &world->rect);
             //printf("world->arrow.angle : %lf",world->arrow.angle);
         }
 }
@@ -192,8 +200,10 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         
                         case SDLK_SPACE:
                             pressed = true;
+
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
+                                world->rect.w+=5 ;
                             }
                         break;  
                         case SDLK_p:
@@ -213,6 +223,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                             {
                                 world->ball.power += 1;
                             } 
+                            world->powerPress = 0 ;
                             world->nbCoups++ ;
                         break; 
                     
@@ -393,6 +404,11 @@ void init_data(world_t* world){
     world->ball.dirX = 0;
     world->ball.dirY = 0;
     world->nbCoups = 0 ;
+    world->rect.x =30 ;
+    world->rect.y =650;
+    world->rect.w = 10;
+    world->rect.h = 50;
+    
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;

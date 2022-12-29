@@ -40,6 +40,7 @@ struct world_s{
     sprite_t pause ;
     sprite_t reprendre ;
     sprite_t quitte ;
+    SDL_Rect rect ;
     bool init ;
 };
 
