@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "liste.h"
+#include <SDL2/SDL_ttf.h>
 
 #define PI 3.14159265
 enum STATUS{PERDU , GAGNER , PAUSE , JOUER , LANCEMENT ,SAUVEGARDER} ;
@@ -67,7 +68,7 @@ struct textures_s{
     SDL_Texture* reprendre ;
     SDL_Texture* reprendre_a ;
     SDL_Texture* quitte ;
-
+    TTF_Font* font ;
 
 
 

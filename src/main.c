@@ -5,7 +5,7 @@
 #include "liste.h"
 #include "fonctions_fichiers.h"
 #include <SDL2/SDL.h>
-
+#include "sdl2-ttf-light.h"
 #define DEG 0.0174533
 #define DEC 250
 #define HAUT 100
@@ -157,6 +157,23 @@ void update_data(world_t* world){
         
     }
 }
+//Fonction qui change le score entier en score en chaine de caractere
+void int_to_char(char* score_txt,int score){
+	if(score < 10){
+		char temp = score + '0'; //le score est sur un seul chiffre
+		score_txt[0] = temp ;
+		score_txt[1] = '\0';
+	}else{
+		char temp = score/10 + '0'; //le score est sur 2 chiffres
+		char temp2 = score%10 + '0';
+		score_txt[0] = temp ;
+		score_txt[1] = temp2;
+		score_txt[2] = '\0';
+	}
+	
+	
+	
+}
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
 
         apply_texture(textures->back,renderer,0,0,1280,720,0);
@@ -168,6 +185,11 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
             apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            apply_text(renderer,30,100,200,40,"Nombre de TIR :",textures->font);
+            char* score = malloc(sizeof(char)*3) ;
+            int_to_char(score,world->nbCoups) ;
+            apply_text(renderer,100,150,50,70,score,textures->font);
+
             SDL_RenderFillRect(renderer, &world->rect);
             //printf("world->arrow.angle : %lf",world->arrow.angle);
         }
@@ -469,6 +491,7 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     texture->arrow = charger_image("arrow.bmp",renderer);
     texture->back = charger_image("background.bmp",renderer);
     texture->tile = malloc(sizeof(textures_t)*(world->colonne+2)*(world->ligne+2));
+    texture->font = load_font("arial.ttf",100);
     //Initialisation des textures du terrain
     SDL_Texture*  wall =charger_image("wood.bmp",renderer);
     SDL_Texture*  grass =charger_image("grass.bmp",renderer);
@@ -543,6 +566,7 @@ void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
 }
 
 void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world_t* world){
+    init_ttf();
     init_data(world);
     init_textures(*renderer,texture,world);
 
