@@ -3,6 +3,10 @@
         "stdbool.h": "c",
         "fonctions_fichiers.h": "c",
         "sdl.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "sdl_ttf.h": "c",
+        "objet.h": "c",
+        "stdlib.h": "c",
+        "gestion.h": "c"
     }
 }
