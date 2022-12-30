@@ -311,60 +311,26 @@ bool entre(int v1,int v2,int v3){
     
 }
 
-int sprites_collide(sprite_t *sp2, sprite_t *sp1){
+bool sprites_collide(sprite_t sp2, sprite_t sp1){
 
-    //printf("ball x :%d,y:%d %d,%d : \n",sp2->x,sp2->y,sp2->h,sp2->w);
-    //printf("mur : %d,%d,%d,%d \n",sp1->x,sp1->y,sp1->h,sp1->w) ;
-
-
-    if(entre(sp1->x,sp2->x,sp1->x+sp1->w) && entre(sp1->y,sp2->y,sp1->y + sp1->h)){
-        return wich_side_collide(sp2, sp1);
+    if(entre(sp1.x,sp2.x,sp1.x+sp1.w) && entre(sp1.y,sp2.y,sp1.y + sp1.h)){
+        return true;
     }
-    if (entre(sp1->x,sp2->x + sp2->w,sp1->x+sp1->w) && entre(sp1->y,sp2->y+sp2->h,sp1->y + sp1->h))
+    if (entre(sp1.x,sp2.x + sp2.w,sp1.x+sp1.w) && entre(sp1.y,sp2.y+sp2.h,sp1.y + sp1.h))
     {
-        return wich_side_collide(sp2, sp1);
+        return true;
     }
-    if (entre(sp1->x,sp2->x,sp1->x+sp1->w) && entre(sp1->y,sp2->y+sp2->h,sp1->y + sp1->h)){
-        return wich_side_collide(sp2, sp1);
+    if (entre(sp1.x,sp2.x,sp1.x+sp1.w) && entre(sp1.y,sp2.y+sp2.h,sp1.y + sp1.h)){
+        return true;
     }
-    if (entre(sp1->y,sp2->y,sp1->y + sp1->h) && entre(sp1->x,sp2->x + sp2->w,sp1->x+sp1->w))
+    if (entre(sp1.y,sp2.y,sp1.y + sp1.h) && entre(sp1.x,sp2.x + sp2.w,sp1.x+sp1.w))
     {
-        return wich_side_collide(sp2, sp1);
+        return true;
     }
 
-    return 0 ;
+    return false;
 }
 
-int wich_side_collide(sprite_t *sp2, sprite_t *sp1){
-    //sp2 : ball
-    //sp1 : wall
-
-    if (entre(sp1->x, sp2->x, sp1->x + sp1->w))
-    {
-        if (entre(sp1->x, sp2->x + sp2->w, sp1->x + sp1->w))
-        {   
-            printf("touch top");
-            return 1;
-        } else {
-            printf(" touch right");
-            return 2;
-        }
-    }
-
-    if (entre(sp1->x, sp2->x + sp2->w, sp1->x + sp1->w))
-    {
-        if (entre(sp1->y, sp2->y + sp2->h, sp1->y + sp1->h))
-        {   
-            printf(" touch left");
-            return 3;
-        } else {
-            printf(" touch bottom");
-            return 4;
-        }
-    }
-    
-    return 0;
-}
 bool pointeur_collision(sprite_t sp1){
     int posx = 0 ;
     int posy = 0 ;       
@@ -373,50 +339,6 @@ bool pointeur_collision(sprite_t sp1){
         return true ;
     }
     return false;
-
-}
-//gestion d'une collision entre deux sprites
-void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1){
-
-
-    //printf("avant :power :%i \n",sp2->power);
-    //printf("angle :%Lf\n",sp2->angle);
-    //double rel = (sp1->y+(sp1->h/2))-(sp2->y+(sp2->w/2));
-    //double norm = rel/(sp1->h/2);
-    //double bounce = norm * (5*PI/12);
-    //sp2->angle = PI/2 - sp2->angle;
-    //sp2->power -= 2;
-    //printf("power :%i \n",sp2->power);
-    //printf("angle :%Lf\n",sp2->angle);
-
-    switch (sprites_collide(sp2, sp1))
-    {
-    case 1:
-        // haut
-    break;
-
-    case 2:
-        // droite
-        sp2->x -= sp2->power * cos(sp2->angle);
-        sp2->y -= -sp2->power * -sin(sp2->angle);
-    break;
-
-    case 3:
-        // gauche
-        sp2->x -= sp2->power * cos(sp2->angle);
-        sp2->y -= sp2->power * -sin(sp2->angle);  
-    break;
-
-    case 4:
-        
-        // bas
-    break;
-    
-
-    }
-
-    //sp2->power ++;
-
 
 }
 

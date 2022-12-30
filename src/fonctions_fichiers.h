@@ -143,14 +143,12 @@ void displayHole(SDL_Rect *SrcR_fond, SDL_Rect *DestR_fond, SDL_Rect *SrcR_hole,
 
 void display_arrow(world_t* world);
 
-void handle_sprites_collision(sprite_t *sp2, sprite_t *sp1);
-
-int wich_side_collide(sprite_t *sp2, sprite_t *sp1);
-
 bool entre(int v1,int v2,int v3);
 
 bool pointeur_collision(sprite_t sp1);
 
 void enregistrer_world_s(const char *nom_fichier, const struct world_s *world);
+
+bool sprites_collide(sprite_t sp2, sprite_t sp1);
 
 #endif

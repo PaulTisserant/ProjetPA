@@ -1,16 +1,16 @@
-CC = gcc
-CFLAGS = -W -Wall -ansi -std=c99
-LDFLAGS = `sdl2-config --cflags --libs` -lm
-EXEC = main
-all: $(EXEC)
-main: liste.o fonctions_fichiers.o main.o
-	$(CC) -o main fonctions_fichiers.o liste.o main.o $(LDFLAGS)	
-fonctions_fichiers.o: fonctions_fichiers.c
-	$(CC) -o fonctions_fichiers.o -c fonctions_fichiers.c $(CFLAGS)
-liste.o: liste.c
-	$(CC) -o liste.o -c liste.c $(CFLAGS)	
-clean:
-	rm -rf *.o *~
-mrproper: clean
-	rm -rf $(EXEC)
+CFLAGS = -O3 `sdl2-config --cflags`
+LDFLAGS = `sdl2-config --libs` -lSDL2_ttf -lm 
 
+INC = fonctions_fichiers.h liste.h  sdl2-ttf-light.h 
+SRC = main.c fonctions_fichiers.c liste.c sdl2-ttf-light.c
+OBJ = $(SRC:%.c=%.o)
+PROG = golf
+
+
+%.o: %.c $(INC)
+	gcc $(CFLAGS) -c $<
+
+golf: $(OBJ)
+	gcc $(CFLAGS) $(OBJ) $(LDFLAGS) -o $@
+clean:
+	rm -f *~ *.o $(PROG)

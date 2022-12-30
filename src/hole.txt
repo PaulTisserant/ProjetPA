@@ -1,10 +1,10 @@
     XXXXXXXX     WWW   
     X      X     WWW
-    X   B  X     WWW
+    X   O  X     WWW
     X      X     WWW
     XXX  XXX     WWW
                  WWW
-                 BBB
+                  B
                  WWW
                  WWW
                  WWW

@@ -18,7 +18,7 @@ struct sprite_s{
     int power ;
     double dirX;
     double dirY;
-    double angle ; /*!<Vitesse. */
+    double angle ; /*!< Angle de rotation. */
     int is_visible ; /*!< Variable qui indique la visibilité du sprite ou non. */
 
 };

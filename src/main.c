@@ -11,70 +11,37 @@
 #define HAUT 100
 #define ball_size 10
 
+void apply_friction(world_t* world) {
+}
+
+// Function to check if the ball needs to bounce off a tile
+bool check_tile_collision(sprite_t ball, sprite_t mur) {
+  // Check if the ball is intersecting the tile
+  if (ball.x + ball.dirX < mur.x + mur.w &&
+      ball.x + ball.dirX + ball.w > mur.x &&
+      ball.dirY + ball.dirY < mur.y + mur.h &&
+      ball.y + ball.dirY + ball.h > mur.y) {
+    return true;
+  }
+  return false;
+}
+
 void update_data(world_t* world){
     if (world->status == JOUER)
     {
-        /* code */
-
-
-        for (int i = 0; i < longueur(world->tour_terrain); i++)
-        {
-            sprite_t tourmur = neme_elem(i,world->tour_terrain) ;
-            //if(handle_sprites_collision(&(world->ball),&mur) == 1){
-                //world->terminer = true ;
-            //};
-
-            int newX = world->ball.x + world->ball.power;
-            int newY = world->ball.y;
-            //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
-            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
-            {
-                world->ball.dirX *= -1;
-                world->tir = true;
-                
-                world->ball.power-- ;
-                
-            }
-
-            newX = world->ball.x;
-            newY = world->ball.dirY + world->ball.power;
-            //si on augmente y (prochaine frame) et qu'il y aura une world->tir alors on inverse y
-            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
-            {
-                world->ball.dirY *= -1;
-                world->tir = true;
-                world->ball.power-- ;
-
-            }
-
-            newX = world->ball.x - world->ball.power;
-            newY = world->ball.y;
-            //si on diminue x (prochaine frame) et qu'il y aura une world->tir alors on inverse y 
-            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
-            {
-                world->ball.dirY *= -1;
-                world->tir = true;
-                world->ball.power-- ;
-            }
-
-            newX = world->ball.x;
-            newY = world->ball.dirY - world->ball.power;
-            //si on diminue y (prochaine frame) et qu'il y aura une world->tir alors on inverse x
-            if (newX + ball_size > tourmur.x && newX < tourmur.x + tourmur.w && newY + ball_size > tourmur.y && newY < tourmur.y + tourmur.h)
-            { 
-                world->ball.dirX *= -1;
-                world->tir = true;   
-                world->ball.power-- ;      
-            }
+       // si la balle touche le trou 
+       if(world->ball.x + ball_size > world->hole.x && world->ball.x < world->hole.x + world->hole.w && world->ball.y + ball_size > world->hole.y && world->ball.y < world->hole.y + world->hole.h){
+            world->terminer = true ;
         }
 
-
+        //print power
+        printf("%d\n", world->ball.power);
+        
 
         if (!world->tir)
         {
             world->ball.dirX = -world->ball.power * cos(world->ball.angle);
-            world->ball.dirY = world->ball.power * -sin(world->ball.angle);
-            //printf("%ld\n", world->ball.angle);
+            world->ball.dirY = world->ball.power * -sin(world->ball.angle);   
         } 
         
 
@@ -82,81 +49,70 @@ void update_data(world_t* world){
 
         for (int i = 0; i < longueur(world->mur); i++)
         {
-            sprite_t mur = neme_elem(i,world->mur) ;
-            //if(handle_sprites_collision(&(world->ball),&mur) == 1){
-                //world->terminer = true ;
-            //};
 
-            int newX = world->ball.x + world->ball.power;
-            int newY = world->ball.y;
-            //si on augmente x (prochaine frame) et qu'il y aura une collision alors on inverse x 
-            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
-            {
-                world->ball.dirX *= -1;
-                world->tir = true;
+            sprite_t mur = neme_elem(i,world->mur);
+            
+            if(sprites_collide(world->ball, mur)){
                 
-                world->ball.power-- ;
+                printf("COLLISION\n");
+                double normalX;
+                double normalY;
                 
+                normalX = world->ball.x - (mur.x + mur.w / 2);
+                normalY = world->ball.y - (mur.y + mur.h / 2);
+
+                // Calculate the angle of incidence
+                double angle_incidence = atan2(world->ball.dirY, world->ball.dirX);
+
+                // Calculate the angle of reflection
+                double angle_reflection = 2 * atan2(normalY, normalX) - angle_incidence;
+
+                // Calculate the new x and y components of the velocity
+                world->ball.dirX = world->ball.power * cos(angle_reflection);
+                world->ball.dirY = world->ball.power * sin(angle_reflection);
+                break;
+                
+                /*
+                double normalX = (world->ball.x + world->ball.dirX + world->ball.w / 2) - (mur.x + mur.w / 2);
+                double normalY = (world->ball.y+ world->ball.dirY + world->ball.h / 2) - (mur.y+ mur.h / 2);
+
+                // Check if the world->ball is colliding with the mur in the x-direction
+                if (normalX > 0 && normalX < mur.w / 2) {
+                    world->ball.dirX = -world->ball.dirX;
+                }
+
+                // Check if the world->ball is colliding with the mur in the y-direction
+                if (normalY > 0 && normalY < mur.h / 2) {
+                    world->ball.dirY = -world->ball.dirY;
+                }
+                */
             }
 
-            newX = world->ball.x;
-            newY = world->ball.dirY + world->ball.power;
-            //si on augmente y (prochaine frame) et qu'il y aura une world->tir alors on inverse y
-            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
-            {
-                world->ball.dirY *= -1;
-                world->tir = true;
-                world->ball.power-- ;
-
-            }
-
-            newX = world->ball.x - world->ball.power;
-            newY = world->ball.y;
-            //si on diminue x (prochaine frame) et qu'il y aura une world->tir alors on inverse y 
-            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
-            {
-                world->ball.dirY *= -1;
-                world->tir = true;
-                world->ball.power-- ;
-            }
-
-            newX = world->ball.x;
-            newY = world->ball.dirY - world->ball.power;
-            //si on diminue y (prochaine frame) et qu'il y aura une world->tir alors on inverse x
-            if (newX + ball_size > mur.x && newX < mur.x + mur.w && newY + ball_size > mur.y && newY < mur.y + mur.h)
-            { 
-                world->ball.dirX *= -1;
-                world->tir = true;   
-                world->ball.power-- ;      
-            }
         }
 
+        //print dirX et dirY
+        printf("%f\n", world->ball.dirX);
+        printf("%f\n", world->ball.dirY);
 
-        // il faut stocker la nouvelle direction pour que dans les prochaines frame la direction ne soit plus celle de la fleche 
-        // une fois la balle arretée il faudrat reprendre la direction de la fleche 
-        //printf("x: %ld \n",world->ball.dirX);
-        //printf("y :%ld\n",world->ball.dirY);
-        if (world->ball.power > 0)
+        if (world->ball.dirX > 0 || world->ball.dirY > 0)
         {
-        world->ball.x -= world->ball.dirX * 0.8;
-        world->ball.y -= world->ball.dirY * 0.8;
+            if (!world->tir)
+            {
+                world->ball.x -= world->ball.dirX;
+                world->ball.y -= world->ball.dirY;
+                world->ball.power --; 
+
+
+            }else{
+                world->ball.x += world->ball.dirX;
+                world->ball.y += world->ball.dirY;
+                world->ball.power --;
+            }
         }
-        
-
-
-
-
-    
-        if(world->ball.power > 0){
-            world->ball.power -- ;
-        }
-        if (world->powerPress == 0)
-        {
-            world->rect.w = 10 ;
-        }
-        
     }
 }
+
+
 //Fonction qui change le score entier en score en chaine de caractere
 void int_to_char(char* score_txt,int score){
 	if(score < 10){
@@ -207,10 +163,9 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                 case SDL_QUIT:
                     world->terminer = true; 
                 break;
-
                 case SDL_KEYDOWN:
                     switch(evenements->key.keysym.sym) {
-                                            
+
                         case SDLK_q:
                             world->terminer = true; 
                         break; 
@@ -219,19 +174,17 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                             world->ball.x = 378; 
                             world->ball.y = 292;
                         break; 
-                        
+
                         case SDLK_SPACE:
                             pressed = true;
-
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
-                                world->rect.w+=5 ;
                             }
-                        break;  
+                        break;
                         case SDLK_p:
                             world->status = PAUSE ;
                             printf("p");
-                        break;   
+                        break;
                     }
                 break;
                 case SDL_KEYUP:
@@ -240,22 +193,18 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 
                         case SDLK_SPACE:
                             world->tir = false;
-                            world->ball.power = 0;
-                            for (int i = 0; i < world->powerPress; i++)
-                            {
-                                world->ball.power += 1;
-                            } 
-                            world->powerPress = 0 ;
+                            world->ball.power = world->powerPress;
+                            world->powerPress = 0;
                             world->nbCoups++ ;
                         break; 
-                    
-                    }    
+
+                    }
+                break;  
+                case SDL_MOUSEBUTTONDOWN:  
+                        if (evenements->button.button == SDL_BUTTON_LEFT){
+                            display_arrow(world);
+                        }   
                 break;    
-                    case SDL_MOUSEBUTTONDOWN:  
-                            if (evenements->button.button == SDL_BUTTON_LEFT){
-                                display_arrow(world);
-                            }   
-                    break;    
             
             }
         }
@@ -356,7 +305,6 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 
     if (world->status == LANCEMENT)
     {
-        printf("lancement");
        switch (world->page)
        {
        case INIT:
