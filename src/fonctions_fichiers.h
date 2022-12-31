@@ -86,4 +86,6 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world);
 
 bool sprites_collide(sprite_t sp2, sprite_t sp1);
 
+
+int nombres_niveau();
 #endif

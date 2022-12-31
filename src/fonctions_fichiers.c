@@ -363,3 +363,27 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world)
     fclose(fichier);
   }
 }
+bool fichier_exist(const char* nomFichier){
+    FILE* fichier = NULL ;
+    fichier = fopen(nomFichier, "r") ;  
+    if (fichier == NULL)
+    {
+        return false ;
+    }
+    else{
+        fclose(fichier);
+        return true ;
+    }
+
+    
+}
+int nombres_niveau(){
+    int f  = 1;
+    char* nom_niveau = malloc(sizeof(char)*32);
+    sprintf(nom_niveau, "hole1.txt");
+    while(fichier_exist(nom_niveau)){
+        f++ ;
+        sprintf(nom_niveau, "hole%d.txt", f);
+    }
+    return f - 1;
+}

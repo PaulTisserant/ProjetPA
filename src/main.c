@@ -34,7 +34,6 @@ void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world
 
 
 int main(int argc, char *argv[]){
-
     //INIT
     SDL_Renderer *renderer;
     SDL_Window* fenetre; // Déclaration de la fenêtre
@@ -44,6 +43,14 @@ int main(int argc, char *argv[]){
     world.status = LANCEMENT ;
     world.page = INIT ;
     textures.menu = NULL ;
+    world.nb_niveau = nombres_niveau() ;
+    if (world.nb_niveau == 0)
+    {
+        printf("Probleme aucun niveau de disponible") ;
+        exit(1) ;
+    }
+    
+
     init_ttf();
     init_renderer(&renderer,&fenetre,&world);
     textures.font = load_font("arial.ttf",100);

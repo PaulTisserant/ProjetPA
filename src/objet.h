@@ -66,6 +66,8 @@ struct world_s{
     char* pseudo ;
     int nbLettrePseudo;
     bool init ;
+    int nb_niveau ;
+    int current_level;
 };
 
 /**
