@@ -110,6 +110,9 @@ char** lire_fichier(const char* nomFichier) {
 
     //printf("%d,%d \n",ligne,colonne);
 
+    //afficher nomFichier
+    printf("nomFichier : %s \n",nomFichier);
+
     char **tab = allouer_tab_2D(ligne,colonne);
 
     FILE* fichier = NULL ;
@@ -136,7 +139,7 @@ char** lire_fichier(const char* nomFichier) {
 
         fclose(fichier);
     }else {
-        printf("fichier introuvable");
+        printf("fichier introuvable ??????");
     }
 
     return tab;

@@ -10,9 +10,6 @@
 #include "graphique.h"
 
 
-void apply_friction(world_t* world) {
-}
-
 // Function to check if the ball needs to bounce off a tile
 bool check_tile_collision(sprite_t ball, sprite_t mur) {
   // Check if the ball is intersecting the tile
@@ -25,66 +22,77 @@ bool check_tile_collision(sprite_t ball, sprite_t mur) {
   return false;
 }
 
-void update_data(world_t* world, SDL_Renderer *renderer,textures_t* texture){
+void update_data(world_t* world){
     if (world->status == JOUER)
     {
        // si la balle touche le trou 
        if(world->ball.x + ball_size > world->hole.x && world->ball.x < world->hole.x + world->hole.w && world->ball.y + ball_size > world->hole.y && world->ball.y < world->hole.y + world->hole.h){
-            next_level(world,renderer,texture) ;
+            //world->terminer = true ;
         }
 
-        //print power
-        printf("%d\n", world->ball.power);
-        
+        for (int i = 0; i < longueur(world->tour_terrain); i++){
 
-        if (!world->tir)
-        {
-            world->ball.dirX = -world->ball.power * cos(world->ball.angle);
-            world->ball.dirY = world->ball.power * -sin(world->ball.angle);   
-        } 
-        
+            sprite_t tourMur = neme_elem(i,world->tour_terrain);
+            
+            if(sprites_collide(world->ball, tourMur)){
+                
+                printf("collision");
+                // Calculate the center of the tile
+                double tile_centerX = tourMur.x + tourMur.w / 2;
+                double tile_centerY = tourMur.y + tourMur.h / 2;
 
+                // Calculate the center of the ball
+                double ball_centerX = world->ball.x + world->ball.w / 2;
+                double ball_centerY = world->ball.y + world->ball.h / 2;
 
+                // Calculate the normal vector of the tile
+                double normalX = ball_centerX - tile_centerX;
+                double normalY = ball_centerY - tile_centerY;
 
-        for (int i = 0; i < longueur(world->mur); i++)
-        {
+                // Normalize the normal vector (scale it to a length of 1)
+                double length = sqrt(normalX * normalX + normalY * normalY);
+                normalX /= length;
+                normalY /= length;
+
+                // Reflect the ball's velocity vector off the normal vector of the tile
+                double dot_product = world->ball.dirX * normalX + world->ball.dirY * normalY;
+
+                world->ball.dirX = world->ball.dirX - 2 * dot_product * normalX;
+                world->ball.dirY = world->ball.dirY - 2 * dot_product * normalY;
+                
+            }
+
+        }
+
+        for (int i = 0; i < longueur(world->mur); i++){
 
             sprite_t mur = neme_elem(i,world->mur);
             
             if(sprites_collide(world->ball, mur)){
+
+                // Calculate the center of the tile
+                double tile_centerX = mur.x + mur.w / 2;
+                double tile_centerY = mur.y + mur.h / 2;
+
+                // Calculate the center of the ball
+                double ball_centerX = world->ball.x + world->ball.w / 2;
+                double ball_centerY = world->ball.y + world->ball.h / 2;
+
+                // Calculate the normal vector of the tile
+                double normalX = ball_centerX - tile_centerX;
+                double normalY = ball_centerY - tile_centerY;
+
+                // Normalize the normal vector (scale it to a length of 1)
+                double length = sqrt(normalX * normalX + normalY * normalY);
+                normalX /= length;
+                normalY /= length;
+
+                // Reflect the ball's velocity vector off the normal vector of the tile
+                double dot_product = world->ball.dirX * normalX + world->ball.dirY * normalY;
+
+                world->ball.dirX = world->ball.dirX - 2 * dot_product * normalX;
+                world->ball.dirY = world->ball.dirY - 2 * dot_product * normalY;
                 
-                printf("COLLISION\n");
-                double normalX;
-                double normalY;
-                
-                normalX = world->ball.x - (mur.x + mur.w / 2);
-                normalY = world->ball.y - (mur.y + mur.h / 2);
-
-                // Calculate the angle of incidence
-                double angle_incidence = atan2(world->ball.dirY, world->ball.dirX);
-
-                // Calculate the angle of reflection
-                double angle_reflection = 2 * atan2(normalY, normalX) - angle_incidence;
-
-                // Calculate the new x and y components of the velocity
-                world->ball.dirX = world->ball.power * cos(angle_reflection);
-                world->ball.dirY = world->ball.power * sin(angle_reflection);
-                break;
-                
-                /*
-                double normalX = (world->ball.x + world->ball.dirX + world->ball.w / 2) - (mur.x + mur.w / 2);
-                double normalY = (world->ball.y+ world->ball.dirY + world->ball.h / 2) - (mur.y+ mur.h / 2);
-
-                // Check if the world->ball is colliding with the mur in the x-direction
-                if (normalX > 0 && normalX < mur.w / 2) {
-                    world->ball.dirX = -world->ball.dirX;
-                }
-
-                // Check if the world->ball is colliding with the mur in the y-direction
-                if (normalY > 0 && normalY < mur.h / 2) {
-                    world->ball.dirY = -world->ball.dirY;
-                }
-                */
             }
 
         }
@@ -93,31 +101,18 @@ void update_data(world_t* world, SDL_Renderer *renderer,textures_t* texture){
         printf("%f\n", world->ball.dirX);
         printf("%f\n", world->ball.dirY);
 
-        if (world->ball.dirX > 0 || world->ball.dirY > 0)
+        if (world->ball.power > 0)
         {
-            if (!world->tir)
-            {
-                world->ball.x -= world->ball.dirX;
-                world->ball.y -= world->ball.dirY;
-                world->ball.power --; 
+            world->ball.x += world->ball.dirX;
+            world->ball.y += world->ball.dirY;
 
-
-            }else{
-                world->ball.x += world->ball.dirX;
-                world->ball.y += world->ball.dirY;
-                world->ball.power --;
-            }
+            world->ball.dirX *= 0.99;
+            world->ball.dirY *= 0.99;
+            world->ball.power --;
         }
-        if (world->powerPress == 0)
-        {
-            world->rect.w = 10 ;
-        }
-        
     }
 }
-void init_new(world_t* world){
 
-}
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     printf("init data \n");
@@ -152,6 +147,8 @@ void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture){
     }
     
 }
+
+
 void init_data_file(world_t* world){
     char* nomFichier = malloc(sizeof(char)*32) ;
     int col = 0;
@@ -161,7 +158,7 @@ void init_data_file(world_t* world){
     taille_fichier(nomFichier, &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
-    printf("ligne : %i,col:%i",col,ligne);
+    printf("ligne : %i,col:%i \n",col,ligne);
     world->tile = malloc(sizeof(sprite_t)*(world->colonne+2)*(world->ligne+2)) ;
     world->mur = l_vide() ;
     world->tour_terrain = l_vide() ;
@@ -210,26 +207,6 @@ void init_data_file(world_t* world){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Fonction qui change le score entier en score en chaine de caractere
 void int_to_char(char* score_txt,int score){
 	if(score < 10){
@@ -243,7 +220,4 @@ void int_to_char(char* score_txt,int score){
 		score_txt[1] = temp2;
 		score_txt[2] = '\0';
 	}
-	
-	
-	
 }

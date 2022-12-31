@@ -13,16 +13,13 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 
     if (world->status == LANCEMENT)
     {
-       switch (world->page)
-       {
+       switch (world->page) {
        case INIT:
-              
-                
-                if (textures->menu == NULL)
-                {
-                    textures->menu = charger_image("menu.bmp",renderer);
-                }
-                apply_texture(textures->menu,renderer,0,0,1280,720,0);
+        if (textures->menu == NULL)
+        {
+            textures->menu = charger_image("menu.bmp",renderer);
+        }
+        apply_texture(textures->menu,renderer,0,0,1280,720,0);
 
         break;
        case OPTION:
@@ -41,7 +38,7 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
 
         break;
-       default:
+        default:
         break;
        } 
 

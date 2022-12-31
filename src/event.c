@@ -33,7 +33,6 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         case SDLK_SPACE:
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
-                                world->rect.w += 5 ;
                             }
                         break;
                         case SDLK_p:
@@ -49,6 +48,8 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         case SDLK_SPACE:
                             world->tir = false;
                             world->ball.power = world->powerPress;
+                            world->ball.dirX = cos(world->arrow.angle * PI / 180) * world->ball.power;
+                            world->ball.dirY = sin(world->arrow.angle * PI / 180) * world->ball.power;
                             world->powerPress = 0;
                             world->nbCoups++ ;
                         break; 
