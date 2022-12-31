@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
         exit(1) ;
     }
     
-
+    world.current_level = 1 ;
     init_ttf();
     init_renderer(&renderer,&fenetre,&world);
     textures.font = load_font("arial.ttf",100);
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
                 SDL_RenderClear(renderer);
                 refresh_graphics(renderer,&world,&textures);
                 handle_events(&evenements,&world,&textures);
-                update_data(&world);
+                update_data(&world,renderer,&textures);
                 
             }
 

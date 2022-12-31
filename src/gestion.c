@@ -7,7 +7,7 @@
 #include "objet.h"
 #include "sdl2-ttf-light.h"
 #include "gestion.h"
-
+#include "graphique.h"
 
 
 void apply_friction(world_t* world) {
@@ -25,12 +25,12 @@ bool check_tile_collision(sprite_t ball, sprite_t mur) {
   return false;
 }
 
-void update_data(world_t* world){
+void update_data(world_t* world, SDL_Renderer *renderer,textures_t* texture){
     if (world->status == JOUER)
     {
        // si la balle touche le trou 
        if(world->ball.x + ball_size > world->hole.x && world->ball.x < world->hole.x + world->hole.w && world->ball.y + ball_size > world->hole.y && world->ball.y < world->hole.y + world->hole.h){
-            world->terminer = true ;
+            next_level(world,renderer,texture) ;
         }
 
         //print power
@@ -132,21 +132,39 @@ void init_data(world_t* world){
     world->rect.y =650;
     world->rect.w = 10;
     world->rect.h = 50;
-    int col = 0;
-    int ligne = 0 ;
-    int srcpos = 0 ;
 
+    init_data_file(world);
 
 
     
-    taille_fichier("hole.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
+
+}
+void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture){
+    if (world->current_level + 1 > world->nb_niveau)
+    {
+        printf("fin du jeu");
+    }
+    else{
+        world->current_level++ ;
+        init_data(world);
+        init_textures(renderer,texture,world);
+    }
+    
+}
+init_data_file(world_t* world){
+    char* nomFichier = malloc(sizeof(char)*32) ;
+    int col = 0;
+    int ligne = 0 ;
+    int srcpos = 0 ;
+    sprintf(nomFichier, "hole%d.txt",world->current_level);
+    taille_fichier(nomFichier, &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
     printf("ligne : %i,col:%i",col,ligne);
     world->tile = malloc(sizeof(sprite_t)*(world->colonne+2)*(world->ligne+2)) ;
     world->mur = l_vide() ;
     world->tour_terrain = l_vide() ;
-    world->terrain = lire_fichier("hole.txt");              
+    world->terrain = lire_fichier(nomFichier);              
     for (int i = 0; i < world->ligne+2; i++) {
         for (int j = 0; j < world->colonne+2; j++) {      
 
@@ -187,10 +205,8 @@ void init_data(world_t* world){
             
         }
     }
-    
+    free(nomFichier);
 }
-
-
 
 
 

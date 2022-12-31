@@ -385,5 +385,7 @@ int nombres_niveau(){
         f++ ;
         sprintf(nom_niveau, "hole%d.txt", f);
     }
+    free(nom_niveau);
     return f - 1;
+
 }

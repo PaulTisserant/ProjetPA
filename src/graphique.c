@@ -39,8 +39,6 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     SDL_Texture*  grass =charger_image("grass.bmp",renderer);
     SDL_Texture*  block =charger_image("block.bmp",renderer);
     SDL_Texture*  water =charger_image("water.bmp",renderer);
-
-
     int srcpos = 0 ;
     for (int i = 0; i < world->ligne+2; i++) {
         for (int j = 0; j < world->colonne+2; j++) {
@@ -62,14 +60,6 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
                     texture->tile[srcpos] = water;
                 }
             }
-            /*
-            world->tile[srcpos].x = 32*j ;
-            world->tile[srcpos].x = 32*i ;
-            world->tile[srcpos].w = 32 ;
-            world->tile[srcpos].h = 32 ;
-            world->tile[srcpos].angle = 0 ;
-            world->tile[srcpos].v = 0 ; 
-            */
             srcpos++ ;
         }
     }   
