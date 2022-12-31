@@ -86,7 +86,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 
                     }
                     if(pointeur_collision(world->sauv)){
-                        enregistrer_world_s("test",world);
+                        enregistrer_world_s("Sauvegarde.txt",world);
                         world->status = LANCEMENT ;
                     }
                 }

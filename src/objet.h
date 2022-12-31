@@ -49,6 +49,7 @@ struct world_s{
     int ligne ;
     int powerPress;
     int nbCoups ;
+    int CoupsTot ;
     enum STATUS status ;
     enum PAGES page ;
     sprite_t ball ; /*!< balle. */

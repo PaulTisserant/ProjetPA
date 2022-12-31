@@ -354,9 +354,13 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world)
   if (fichier != NULL)
   {
     // écrire les valeurs des champs de la structure dans le fichier
+    fprintf(fichier, "Pseudo %s\n", world->pseudo);
+    fprintf(fichier, "Levels : %d\n", world->current_level);
     fprintf(fichier, "ball_x : %d\n", world->ball.x);
     fprintf(fichier, "ball_y : %d\n", world->ball.y);
     fprintf(fichier, "nbCoups: %d\n", world->nbCoups);
+    fprintf(fichier, "nbCoupsTot: %d\n", world->CoupsTot);
+
 
 
     // fermer le fichier

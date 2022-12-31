@@ -146,12 +146,13 @@ void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture){
     }
     else{
         world->current_level++ ;
+        world->CoupsTot += world->nbCoups ;
         init_data(world);
         init_textures(renderer,texture,world);
     }
     
 }
-init_data_file(world_t* world){
+void init_data_file(world_t* world){
     char* nomFichier = malloc(sizeof(char)*32) ;
     int col = 0;
     int ligne = 0 ;

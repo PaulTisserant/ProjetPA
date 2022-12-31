@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
         printf("Probleme aucun niveau de disponible") ;
         exit(1) ;
     }
-    
+    world.CoupsTot = 0 ;
     world.current_level = 1 ;
     init_ttf();
     init_renderer(&renderer,&fenetre,&world);
