@@ -23,7 +23,6 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             char* score = malloc(sizeof(char)*3) ;
             int_to_char(score,world->nbCoups) ;
             apply_text(renderer,100,150,50,70,score,textures->font);
-
             SDL_RenderFillRect(renderer, &world->rect);
             //printf("world->arrow.angle : %lf",world->arrow.angle);
         }
@@ -35,7 +34,6 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     texture->arrow = charger_image("arrow.bmp",renderer);
     texture->back = charger_image("background.bmp",renderer);
     texture->tile = malloc(sizeof(textures_t)*(world->colonne+2)*(world->ligne+2));
-    texture->font = load_font("arial.ttf",100);
     //Initialisation des textures du terrain
     SDL_Texture*  wall =charger_image("wood.bmp",renderer);
     SDL_Texture*  grass =charger_image("grass.bmp",renderer);

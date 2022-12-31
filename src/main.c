@@ -22,7 +22,6 @@
 
 
 void init(SDL_Renderer **renderer,SDL_Window** fenetre,textures_t* texture,world_t* world){
-    init_ttf();
     init_data(world);
     init_textures(*renderer,texture,world);
 
@@ -45,7 +44,11 @@ int main(int argc, char *argv[]){
     world.status = LANCEMENT ;
     world.page = INIT ;
     textures.menu = NULL ;
+    init_ttf();
     init_renderer(&renderer,&fenetre,&world);
+    textures.font = load_font("arial.ttf",100);
+    world.pseudo = malloc(sizeof(char)*32) ;
+    world.nbLettrePseudo = 0 ;
     textures.buttons = malloc(sizeof(textures_t)*6);
     textures.buttons[0] = charger_image_transparente("jouer_b.bmp",renderer,255,255,255) ;
     textures.buttons[1] = charger_image_transparente("jouer_r.bmp",renderer,255,255,255) ;
@@ -64,7 +67,11 @@ int main(int argc, char *argv[]){
 
     textures.pause = charger_image_transparente("pause.bmp",renderer,255,255,255);
 
+    textures.lancer = charger_image_transparente("repPartie_v.bmp",renderer,64,124 ,77);
+    textures.lancer_a = charger_image_transparente("repPartie_r.bmp",renderer,64,124 ,77);
 
+    textures.recommencer = charger_image_transparente("nouvPartie_v.bmp",renderer,64,124 ,77 );
+    textures.recommencer_a = charger_image_transparente("nouvPartie_r.bmp",renderer,64,124 ,77 );
 
 
     // INitialisations des textures des menus
@@ -80,6 +87,18 @@ int main(int argc, char *argv[]){
     world.reprendre.y = world.pause.y + 14;
     world.reprendre.w = 400 ;
     world.reprendre.h = 100 ;
+
+    world.lancer.x =  200;
+    world.lancer.y =  400;
+    world.lancer.w =  400;
+    world.lancer.h =  100;
+
+    world.recommencer.x =  700;
+    world.recommencer.y =  400;
+    world.recommencer.w =  400;
+    world.recommencer.h =  100;
+
+
     int scr = 0 ;
     for (size_t i = 0; i < 3; i++)
         {
@@ -108,7 +127,6 @@ int main(int argc, char *argv[]){
 
     
 
-    
 
 
     // Boucle principale

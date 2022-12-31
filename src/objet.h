@@ -61,6 +61,10 @@ struct world_s{
     sprite_t reprendre ;
     sprite_t quitte ;
     SDL_Rect rect ;
+    sprite_t lancer ;
+    sprite_t recommencer ;
+    char* pseudo ;
+    int nbLettrePseudo;
     bool init ;
 };
 
@@ -84,11 +88,15 @@ struct textures_s{
     SDL_Texture* pause ;
     SDL_Texture* sauv_a;
     SDL_Texture* sauv ;
+    SDL_Texture* lancer ;
+    SDL_Texture* lancer_a ;
     SDL_Texture* reprendre ;
     SDL_Texture* reprendre_a ;
+    SDL_Texture* recommencer ;
+    SDL_Texture* recommencer_a ;
     SDL_Texture* quitte ;
     TTF_Font* font ;
-
+   
 
 
 };

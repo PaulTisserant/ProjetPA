@@ -22,20 +22,25 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
                 {
                     textures->menu = charger_image("menu.bmp",renderer);
                 }
-                
-                
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
-
 
         break;
        case OPTION:
                 if (textures->menu == NULL)
                 {
-                    printf("nullopt");
                     textures->menu = charger_image("option.bmp",renderer);
                 }
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
+                apply_text(renderer,350,350,40*world->nbLettrePseudo,64,world->pseudo,textures->font);
+        break;
+        case LANCE_GAME:
+                if (textures->menu == NULL)
+                {
+                    textures->menu = charger_image("menu_lance.bmp",renderer);
+                }
+                apply_texture(textures->menu,renderer,0,0,1280,720,0);
 
+        break;
        default:
         break;
        } 
@@ -70,6 +75,26 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
             
         }
     }
+    if (world->page == LANCE_GAME)
+    {
+        if (pointeur_collision(world->lancer)){
+            apply_texture(textures->lancer_a,renderer,world->lancer.x,world->lancer.y,world->lancer.w,world->lancer.h,0);
+
+        }
+        else{
+            apply_texture(textures->lancer,renderer,world->lancer.x,world->lancer.y,world->lancer.w,world->lancer.h,0);
+            
+        }
+        if (pointeur_collision(world->recommencer)){
+            apply_texture(textures->recommencer_a,renderer,world->recommencer.x,world->recommencer.y,world->recommencer.w,world->recommencer.h,0);
+
+        }
+        else{
+            apply_texture(textures->recommencer,renderer,world->recommencer.x,world->recommencer.y,world->recommencer.w,world->recommencer.h,0);
+        }
+
+    }
+    
 }
 
 void gestion_pause(SDL_Renderer *renderer, world_t *world,textures_t *textures){

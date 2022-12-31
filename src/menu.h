@@ -17,6 +17,5 @@
 
 
 int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures);
-
 void gestion_pause(SDL_Renderer *renderer, world_t *world,textures_t *textures);
 #endif

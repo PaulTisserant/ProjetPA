@@ -115,7 +115,9 @@ void update_data(world_t* world){
         
     }
 }
+void init_new(world_t* world){
 
+}
 void init_data(world_t* world){
 //---------------------Initialisation des sprites----------------------------------
     printf("init data \n");
@@ -130,10 +132,13 @@ void init_data(world_t* world){
     world->rect.y =650;
     world->rect.w = 10;
     world->rect.h = 50;
-    
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;
+
+
+
+    
     taille_fichier("hole.txt", &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
