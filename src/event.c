@@ -8,7 +8,6 @@
 #include "constante.h"
 #include "event.h"
 void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
-    bool pressed = false;
     
     while(   SDL_PollEvent( evenements ) ){ 
 
@@ -32,7 +31,6 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         break; 
 
                         case SDLK_SPACE:
-                            pressed = true;
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
                                 world->rect.w += 5 ;
