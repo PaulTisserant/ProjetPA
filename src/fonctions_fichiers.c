@@ -218,11 +218,9 @@ void lire_sauvgarde(world_t* world) {
 
 
 
-        printf("\n nbcoup :%d",world->nbCoups);
-        printf("\n tot :%d",world->CoupsTot);
-        printf("\n lvl :%d",world->current_level);
-
-
+        free(nb_coup);
+        free(nb_coup_tot);
+        free(nb_lvl);
         fclose(fichier);
     }
 }
@@ -264,7 +262,8 @@ void lire_sauv_ball(world_t* world) {
         world->ball.y = atoi(y_ball);
 
 
-
+        free(y_ball);
+        free(x_ball);
         fclose(fichier);
     }else {
         printf("fichier introuvable ??????");

@@ -183,8 +183,7 @@ int main(int argc, char *argv[]){
     }
     enregistre_score("score.txt",&world) ;
     // Libérer de la mémoire
-    SDL_DestroyTexture(textures.hole);
-    SDL_DestroyTexture(textures.ball);
+    clean_data(&world,&textures) ;
     SDL_DestroyRenderer(renderer);
 
     // Quitter SDL

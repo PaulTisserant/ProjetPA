@@ -17,4 +17,5 @@ void init_data(world_t* world);
 void int_to_char(char* score_txt,int score);
 void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture) ;
 void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture);
+void clean_data(world_t* world , textures_t* texture);
 #endif

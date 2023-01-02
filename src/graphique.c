@@ -40,6 +40,10 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
 
             SDL_RenderFillRect(renderer, &world->rect);
             //printf("world->arrow.angle : %lf",world->arrow.angle);
+            free(score);
+            free(max_lvl);
+            free(cur_lvl);
+            free(max_score);
         }
 }
 void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){

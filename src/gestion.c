@@ -234,3 +234,37 @@ void int_to_char(char* score_txt,int score){
 		score_txt[2] = '\0';
 	}
 }
+void clean_data(world_t* world , textures_t* texture){
+    SDL_DestroyTexture(texture->arrow);
+    SDL_DestroyTexture(texture->back);
+    SDL_DestroyTexture(texture->menu);
+    SDL_DestroyTexture(texture->pause);
+    SDL_DestroyTexture(texture->sauv_a);
+    SDL_DestroyTexture(texture->sauv);
+    SDL_DestroyTexture(texture->lancer);
+    SDL_DestroyTexture(texture->lancer_a);
+    SDL_DestroyTexture(texture->reprendre);
+    SDL_DestroyTexture(texture->reprendre_a);
+    SDL_DestroyTexture(texture->recommencer);
+    SDL_DestroyTexture(texture->recommencer_a);
+    SDL_DestroyTexture(texture->quitte);
+    SDL_DestroyTexture(texture->menu_fin);
+    clean_font(texture->font) ;
+    for (size_t i = 0; i < 6; i++)
+    {
+        SDL_DestroyTexture(texture->buttons[i]);
+    }
+    free(texture->buttons);
+    desallouer_tab_2D(world->terrain,world->ligne);
+    free(world->tile);
+    free(world->buttons);
+    free(world->pseudo);
+    free(world->terrain);
+    liberer_liste(world->mur);
+    liberer_liste(world->tour_terrain);
+
+
+
+
+
+}

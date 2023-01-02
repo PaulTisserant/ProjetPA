@@ -130,7 +130,7 @@ void update_fin(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         apply_text(renderer,200,400,600,64,"Vous avez terminer le jeu en seulement",textures->font);
         apply_text(renderer,830,400,80,64,nb_coup,textures->font);
         apply_text(renderer,940,400,200,64,"coups",textures->font);
-
+        free(nb_coup);
 
     }
     
