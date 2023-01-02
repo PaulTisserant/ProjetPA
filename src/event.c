@@ -33,6 +33,8 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         case SDLK_SPACE:
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
+                                world->rect.w+=5 ;
+
                             }
                         break;
                         case SDLK_p:
@@ -52,6 +54,8 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                             world->ball.dirY = sin(world->arrow.angle * PI / 180) * world->ball.power;
                             world->powerPress = 0;
                             world->nbCoups++ ;
+                            world->CoupsTot++ ;
+
                         break; 
 
                     }
@@ -88,7 +92,9 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     }
                     if(pointeur_collision(world->sauv)){
                         enregistrer_world_s("Sauvegarde.txt",world);
+                        textures->menu = NULL ;
                         world->status = LANCEMENT ;
+                        world->page = INIT ;
                     }
                 }
 
@@ -164,6 +170,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         if (world->page == LANCE_GAME)
                         {
                             if (pointeur_collision(world->lancer)){
+                                world->init_sauv = true ;
                                 world->status = JOUER ;
                             }
                             if (pointeur_collision(world->recommencer))
@@ -178,7 +185,18 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     
             }
         }
-
-        
+        if (world->status == FIN)
+        {
+            switch (evenements->type)
+            {
+            case SDL_KEYDOWN:
+                switch(evenements->key.keysym.sym) {
+                    case SDLK_RETURN :
+                    world->terminer = true ;
+                    break;
+                }
+            break;
+            }   
     }
+}
 }

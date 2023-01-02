@@ -22,12 +22,12 @@ bool check_tile_collision(sprite_t ball, sprite_t mur) {
   return false;
 }
 
-void update_data(world_t* world){
+void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
     if (world->status == JOUER)
     {
        // si la balle touche le trou 
        if(world->ball.x + ball_size > world->hole.x && world->ball.x < world->hole.x + world->hole.w && world->ball.y + ball_size > world->hole.y && world->ball.y < world->hole.y + world->hole.h){
-            //world->terminer = true ;
+            next_level(world,renderer,texture);
         }
 
         for (int i = 0; i < longueur(world->tour_terrain); i++){
@@ -98,8 +98,8 @@ void update_data(world_t* world){
         }
 
         //print dirX et dirY
-        printf("%f\n", world->ball.dirX);
-        printf("%f\n", world->ball.dirY);
+        //printf("%f\n", world->ball.dirX);
+        //printf("%f\n", world->ball.dirY);
 
         if (world->ball.power > 0)
         {
@@ -109,6 +109,10 @@ void update_data(world_t* world){
             world->ball.dirX *= 0.99;
             world->ball.dirY *= 0.99;
             world->ball.power --;
+        }
+        if (world->powerPress == 0)
+        {
+            world->rect.w = 10 ;
         }
     }
 }
@@ -127,9 +131,17 @@ void init_data(world_t* world){
     world->rect.y =650;
     world->rect.w = 10;
     world->rect.h = 50;
-
+    if (world->init_sauv)
+    {
+        lire_sauvgarde(world);
+    }
     init_data_file(world);
-
+    if (world->init_sauv)
+    {
+         lire_sauv_ball(world);
+    }
+    
+    
 
     
 
@@ -138,6 +150,7 @@ void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture){
     if (world->current_level + 1 > world->nb_niveau)
     {
         printf("fin du jeu");
+        world->status = FIN ;
     }
     else{
         world->current_level++ ;

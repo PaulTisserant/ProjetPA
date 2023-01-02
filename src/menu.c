@@ -6,7 +6,7 @@
 #include "graphique.h"
 #include "objet.h"
 #include "menu.h"
-
+#include "gestion.h"
 
 int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
 
@@ -113,4 +113,25 @@ void gestion_pause(SDL_Renderer *renderer, world_t *world,textures_t *textures){
         }
 
     }
+}
+void update_fin(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+
+
+    if (world->status = FIN)
+    {
+        if (textures->menu_fin != NULL)
+        {
+            apply_texture(textures->menu_fin,renderer,0,0,1280,720,0);
+        }
+        char* nb_coup = malloc(sizeof(char)*3);
+        int_to_char(nb_coup,world->CoupsTot);
+        apply_text(renderer,380,220,480,70,"Felicitation",textures->font);
+        apply_text(renderer,500,310,40*world->nbLettrePseudo,64,world->pseudo,textures->font);
+        apply_text(renderer,200,400,600,64,"Vous avez terminer le jeu en seulement",textures->font);
+        apply_text(renderer,830,400,80,64,nb_coup,textures->font);
+        apply_text(renderer,940,400,200,64,"coups",textures->font);
+
+
+    }
+    
 }

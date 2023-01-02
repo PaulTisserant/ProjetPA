@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
     textures_t textures;
     world.status = LANCEMENT ;
     world.page = INIT ;
+    world.init_sauv = false ;
     textures.menu = NULL ;
     world.nb_niveau = nombres_niveau() ;
     if (world.nb_niveau == 0)
@@ -94,6 +95,7 @@ int main(int argc, char *argv[]){
     world.reprendre.y = world.pause.y + 14;
     world.reprendre.w = 400 ;
     world.reprendre.h = 100 ;
+    world.CoupsTot = 0 ;
 
     world.lancer.x =  200;
     world.lancer.y =  400;
@@ -158,7 +160,7 @@ int main(int argc, char *argv[]){
         
         if (!world.terminer)
         {
-            if (world.status == JOUER)
+            if (world.status == JOUER && !world.terminer)
             {
                 SDL_RenderClear(renderer);
                 refresh_graphics(renderer,&world,&textures);
@@ -166,16 +168,20 @@ int main(int argc, char *argv[]){
                 update_data(&world,renderer,&textures);
                 
             }
-
+            if (world.status == FIN && !world.terminer)
+            {
+                SDL_RenderClear(renderer);
+                update_fin(renderer,&world,&textures);
+                handle_events(&evenements,&world,&textures);
+                SDL_RenderPresent(renderer);/* code */
+            }
+            
   
         SDL_Delay(20);
         SDL_RenderPresent(renderer);
         }
     }
-    free(&textures);
-
-
-    printf("%i",world.nbCoups);
+    enregistre_score("score.txt",&world) ;
     // Libérer de la mémoire
     SDL_DestroyTexture(textures.hole);
     SDL_DestroyTexture(textures.ball);

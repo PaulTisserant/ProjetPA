@@ -67,8 +67,10 @@ struct world_s{
     char* pseudo ;
     int nbLettrePseudo;
     bool init ;
+    bool init_sauv;
     int nb_niveau ;
     int current_level;
+    bool sauv_auto ;
 };
 
 /**
@@ -98,6 +100,8 @@ struct textures_s{
     SDL_Texture* recommencer ;
     SDL_Texture* recommencer_a ;
     SDL_Texture* quitte ;
+    SDL_Texture* menu_fin ;
+
     TTF_Font* font ;
    
 

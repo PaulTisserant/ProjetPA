@@ -86,6 +86,9 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world);
 
 bool sprites_collide(sprite_t sp2, sprite_t sp1);
 
-
+void lire_sauvgarde(world_t* world) ;
+void lire_sauv_ball(world_t* world);
 int nombres_niveau();
+
+void enregistre_score(const char *filename,world_t* world);
 #endif

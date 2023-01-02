@@ -144,6 +144,167 @@ char** lire_fichier(const char* nomFichier) {
 
     return tab;
 }
+void char_array_empty(char* char_array) {
+    for (int i = 0; char_array[i] != '\0'; i++) {
+        //if (!(char_array[i] >= '0' && char_array[i] <= '9'))
+        {
+            printf("\nchar_array[i] =%c",char_array[i]);
+            char_array[i] = ' ';
+        }
+    }
+}
+
+void lire_sauvgarde(world_t* world) {
+    int lig = 0;
+    int col = 0;
+    FILE* fichier = NULL ;
+    fichier = fopen("sauvegarde.txt", "r") ;
+
+
+    char* nb_coup= malloc(sizeof(char)*3);
+    char* nb_coup_tot= malloc(sizeof(char)*3);
+    char* nb_lvl= malloc(sizeof(char)*1);
+
+
+        char_array_empty(nb_coup);
+        printf("\ncouptot") ;
+        char_array_empty(nb_coup_tot);
+        printf("\n lvl") ;
+
+        char_array_empty(nb_lvl);
+   int c ;
+
+    if (fichier != NULL) {
+        
+         do {
+            c = fgetc(fichier);
+            if (c == '\n' || c == '\r' ||c == EOF)
+            {
+                lig ++;
+                col = 0;
+                if (c == '\r') {
+                    c = fgetc(fichier);
+                }
+            } else {
+                if (lig == 0 && col >= 11)
+                {
+                    world->pseudo[col-11] = c ;
+                }     
+                if (lig == 1 && col >= 11)
+                {
+                    nb_lvl[col-11] = c ;             
+                }
+                if (lig == 4 && col >= 11){
+                    nb_coup[col-11] = c ;
+                }
+                if (lig == 5 && col >= 11){
+                    nb_coup_tot[col-11] = c  ;
+                    printf("c = %c",c);
+                }
+                col ++;
+            }
+        } while (c != EOF) ;
+    
+
+
+        printf("\n%s",nb_coup_tot) ;
+        int f = atoi(nb_coup_tot);
+
+        printf("f = %d",f);
+        world->nbCoups = atoi(nb_coup);
+        world->CoupsTot = atoi(nb_coup_tot);
+        world->current_level =  atoi(nb_lvl);
+        printf("\n%d",world->CoupsTot) ;
+
+
+
+        printf("\n nbcoup :%d",world->nbCoups);
+        printf("\n tot :%d",world->CoupsTot);
+        printf("\n lvl :%d",world->current_level);
+
+
+        fclose(fichier);
+    }
+}
+void lire_sauv_ball(world_t* world) {
+    int lig = 0;
+    int col = 0;
+    char* x_ball= malloc(sizeof(char)*5);
+    char* y_ball= malloc(sizeof(char)*5);
+    FILE* fichier = NULL ;
+    fichier = fopen("sauvegarde.txt", "r") ;
+    int c ;
+        char_array_empty(x_ball);
+        char_array_empty(y_ball);
+    if (fichier != NULL) {
+        
+         do {
+            c = fgetc(fichier);
+            if (c == '\n' || c == '\r' ||c == EOF)
+            {
+                lig ++;
+                col = 0;
+                if (c == '\r') {
+                    c = fgetc(fichier);
+                }
+            } else {
+                if (lig == 2 && col >= 11){
+                    x_ball[col-11] = c ;
+                }
+                if (lig == 3 && col >= 11){
+                    y_ball[col-11] = c ;
+                }
+
+                col ++;
+            }
+        } while (c != EOF) ;
+
+
+        world->ball.x = atoi(x_ball);
+        world->ball.y = atoi(y_ball);
+
+
+
+        fclose(fichier);
+    }else {
+        printf("fichier introuvable ??????");
+    }
+    world->init_sauv = false ;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void enregistre_score(const char *filename,world_t* world) {
+  // Ouvrir le fichier en écriture en fin de fichier
+  FILE *file = fopen(filename, "a");
+  if (file == NULL) {
+    // Erreur d'ouverture du fichier
+    perror("fichier introuvable");
+    return;
+  }
+char* ligne = malloc(sizeof(char)*64) ;
+char_array_empty(ligne);
+printf("pseudo %s",world->pseudo);
+sprintf(ligne,"%s%s%d%s",world->pseudo," ",world->CoupsTot,"\n");
+printf("ligne %s",ligne);
+
+  // Écrire la ligne dans le fichier
+  fprintf(file, ligne);
+  // Fermer le fichier
+  fclose(file);
+  free(ligne);
+}
 
 /*
  Retourner un nouveau tableau, dans lequel toutes les occurrences du
@@ -357,12 +518,12 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world)
   if (fichier != NULL)
   {
     // écrire les valeurs des champs de la structure dans le fichier
-    fprintf(fichier, "Pseudo %s\n", world->pseudo);
-    fprintf(fichier, "Levels : %d\n", world->current_level);
-    fprintf(fichier, "ball_x : %d\n", world->ball.x);
-    fprintf(fichier, "ball_y : %d\n", world->ball.y);
-    fprintf(fichier, "nbCoups: %d\n", world->nbCoups);
-    fprintf(fichier, "nbCoupsTot: %d\n", world->CoupsTot);
+    fprintf(fichier, "Pseudo :   %s\n", world->pseudo);
+    fprintf(fichier, "Levels :   %d\n", world->current_level);
+    fprintf(fichier, "ball_x :   %d\n", world->ball.x);
+    fprintf(fichier, "ball_y :   %d\n", world->ball.y);
+    fprintf(fichier, "nbCoups:   %d\n", world->nbCoups);
+    fprintf(fichier, "nbCoupsTot:%d\n", world->CoupsTot);
 
 
 

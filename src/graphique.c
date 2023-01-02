@@ -19,10 +19,25 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
             apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            apply_text(renderer,30,100,200,40,"Nombre de TIR :",textures->font);
             char* score = malloc(sizeof(char)*3) ;
+            char* max_lvl = malloc(sizeof(char)*3) ;
+            char* cur_lvl = malloc(sizeof(char)*3) ;
+            char* max_score = malloc(sizeof(char)*4);
+            
             int_to_char(score,world->nbCoups) ;
+            int_to_char(max_lvl,world->nb_niveau) ;
+            int_to_char(cur_lvl,world->current_level) ;
+            int_to_char(max_score,world->CoupsTot) ;
+            apply_text(renderer,30,100,200,40,"Nombre de TIR :",textures->font);
             apply_text(renderer,100,150,50,70,score,textures->font);
+
+            apply_text(renderer,30,200,200,40,"Nombre total de TIR :",textures->font);
+            apply_text(renderer,100,250,50,70,max_score,textures->font);
+
+            apply_text(renderer,600,50,25,35,cur_lvl,textures->font);
+            apply_text(renderer,630,50,25,35,"/",textures->font);
+            apply_text(renderer,660,50,25,35,max_lvl,textures->font);
+
             SDL_RenderFillRect(renderer, &world->rect);
             //printf("world->arrow.angle : %lf",world->arrow.angle);
         }
@@ -39,6 +54,7 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     SDL_Texture*  grass =charger_image("grass.bmp",renderer);
     SDL_Texture*  block =charger_image("block.bmp",renderer);
     SDL_Texture*  water =charger_image("water.bmp",renderer);
+    texture->menu_fin = charger_image("menu_fin.bmp",renderer);
     int srcpos = 0 ;
     for (int i = 0; i < world->ligne+2; i++) {
         for (int j = 0; j < world->colonne+2; j++) {
