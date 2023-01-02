@@ -1,0 +1,31 @@
+JEU DE GOLF
+
+AUTEURS : 
+	TISSERANT PAUL (TP4)
+	MANS Léo  (TP1)
+
+
+NOTICE JEU DE GOLF
+
+Compilation avec Makefile.
+
+Il faut obligatoirement avoir un fichier hole1.txt dans le dossier niveaux.
+
+Pour avoir plusieurs niveaux il faut plusieurs hole(num).txt
+	Exemple:
+		hole1.txt
+		hole2.txt
+		hole3.txt
+		...
+		hole(n).txt
+
+Les touches pour jouer au jeu :
+
+p : Menu Pause
+Touche espace : Pour tirer ( La puissance augmente lors que la touche reste enfoncée)
+La souris : Pour viser
+La visée prends en compte le vecteur constitué des 2 points : curseur et balle pour la direction.
+Echap : Pour revenir en arriere dans les menus 
+Touche q : Pour finir le jeu en cours
+r : Pour remettre la balle au point de depart
+	
