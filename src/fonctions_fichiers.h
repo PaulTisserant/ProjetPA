@@ -89,6 +89,6 @@ bool sprites_collide(sprite_t sp2, sprite_t sp1);
 void lire_sauvgarde(world_t* world) ;
 void lire_sauv_ball(world_t* world);
 int nombres_niveau();
-
+void char_array_empty(char* char_array) ;
 void enregistre_score(const char *filename,world_t* world);
 #endif

@@ -19,6 +19,9 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             apply_texture(textures->hole,renderer,world->hole.x,world->hole.y,world->hole.w,world->hole.h,0);
             apply_texture(textures->arrow,renderer,world->arrow.x,world->arrow.y,world->arrow.w,world->arrow.h,world->arrow.angle);
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+
+            //Convertion des infos de world en chaine de caractere pour pouvoir les afficher avec la fonction apply_text
             char* score = malloc(sizeof(char)*3) ;
             char* max_lvl = malloc(sizeof(char)*3) ;
             char* cur_lvl = malloc(sizeof(char)*3) ;
@@ -39,7 +42,6 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
             apply_text(renderer,660,50,25,35,max_lvl,textures->font);
 
             SDL_RenderFillRect(renderer, &world->rect);
-            //printf("world->arrow.angle : %lf",world->arrow.angle);
             free(score);
             free(max_lvl);
             free(cur_lvl);
@@ -48,18 +50,20 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
 }
 void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
     printf("init textures \n");
-    texture->ball = charger_image_transparente("ball.bmp",renderer,0,255,255);
-    texture->hole = charger_image_transparente("hole.bmp",renderer,0,255,255);
-    texture->arrow = charger_image("arrow.bmp",renderer);
-    texture->back = charger_image("background.bmp",renderer);
+    texture->ball = charger_image_transparente("ressources/ball.bmp",renderer,0,255,255);
+    texture->hole = charger_image_transparente("ressources/hole.bmp",renderer,0,255,255);
+    texture->arrow = charger_image("ressources/arrow.bmp",renderer);
+    texture->back = charger_image("ressources/background.bmp",renderer);
     texture->tile = malloc(sizeof(textures_t)*(world->colonne+2)*(world->ligne+2));
     //Initialisation des textures du terrain
-    SDL_Texture*  wall =charger_image("wood.bmp",renderer);
-    SDL_Texture*  grass =charger_image("grass.bmp",renderer);
-    SDL_Texture*  block =charger_image("block.bmp",renderer);
-    SDL_Texture*  water =charger_image("water.bmp",renderer);
-    texture->menu_fin = charger_image("menu_fin.bmp",renderer);
+    SDL_Texture*  wall =charger_image("ressources/wood.bmp",renderer);
+    SDL_Texture*  grass =charger_image("ressources/grass.bmp",renderer);
+    SDL_Texture*  block =charger_image("ressources/block.bmp",renderer);
+    SDL_Texture*  water =charger_image("ressources/water.bmp",renderer);
+    texture->menu_fin = charger_image("ressources/menu_fin.bmp",renderer);
     int srcpos = 0 ;
+
+    //initialisation des textures des tuiles du terrain
     for (int i = 0; i < world->ligne+2; i++) {
         for (int j = 0; j < world->colonne+2; j++) {
 
@@ -88,8 +92,6 @@ void init_textures(SDL_Renderer *renderer,textures_t* texture,world_t* world){
 
 
      
-    printf("Init texture terminer");
-
 }
 void init_renderer(SDL_Renderer **renderer,SDL_Window** fenetre,world_t* world){
     printf("init renderer \n");

@@ -11,7 +11,7 @@
 #include "menu.h"
 #include "gestion.h"
 #include "event.h"
-
+#include "fonctions_fichiers.h"
 
         
 
@@ -40,6 +40,11 @@ int main(int argc, char *argv[]){
     SDL_Event evenements; // Événements liés à la fenêtre
     world_t world;
     textures_t textures;
+
+
+
+
+    //___________________Initialisation des données/texture du menu______________________
     world.status = LANCEMENT ;
     world.page = INIT ;
     world.init_sauv = false ;
@@ -54,35 +59,27 @@ int main(int argc, char *argv[]){
     world.current_level = 1;
     init_ttf();
     init_renderer(&renderer,&fenetre,&world);
-    textures.font = load_font("arial.ttf",100);
+    textures.font = load_font("ressources/arial.ttf",100);
     world.pseudo = malloc(sizeof(char)*32) ;
+    char_array_empty(world.pseudo);
     world.nbLettrePseudo = 0 ;
     textures.buttons = malloc(sizeof(textures_t)*6);
-    textures.buttons[0] = charger_image_transparente("jouer_b.bmp",renderer,255,255,255) ;
-    textures.buttons[1] = charger_image_transparente("jouer_r.bmp",renderer,255,255,255) ;
-    textures.buttons[2] = charger_image_transparente("opt_b.bmp",renderer,255,255,255) ;
-    textures.buttons[3] = charger_image_transparente("opt_r.bmp",renderer,255,255,255) ;
-    textures.buttons[4] = charger_image_transparente("stop_b.bmp",renderer,255,255,255) ;
-    textures.buttons[5] = charger_image_transparente("stop_r.bmp",renderer,255,255,255) ;
+    textures.buttons[0] = charger_image_transparente("ressources/jouer_b.bmp",renderer,255,255,255) ;
+    textures.buttons[1] = charger_image_transparente("ressources/jouer_r.bmp",renderer,255,255,255) ;
+    textures.buttons[2] = charger_image_transparente("ressources/opt_b.bmp",renderer,255,255,255) ;
+    textures.buttons[3] = charger_image_transparente("ressources/opt_r.bmp",renderer,255,255,255) ;
+    textures.buttons[4] = charger_image_transparente("ressources/stop_b.bmp",renderer,255,255,255) ;
+    textures.buttons[5] = charger_image_transparente("ressources/stop_r.bmp",renderer,255,255,255) ;
     world.buttons = malloc(sizeof(sprite_t)*6);
-
-    textures.sauv = charger_image_transparente("sauv_v.bmp",renderer,77, 93, 70);
-    textures.sauv_a = charger_image_transparente("sauv_r.bmp",renderer,77, 93, 70);
-
-    
-    textures.reprendre = charger_image_transparente("reprendre_v.bmp",renderer,77, 93, 70);
-    textures.reprendre_a = charger_image_transparente("reprendre_r.bmp",renderer,77, 93, 70);
-
-    textures.pause = charger_image_transparente("pause.bmp",renderer,255,255,255);
-
-    textures.lancer = charger_image_transparente("repPartie_v.bmp",renderer,64,124 ,77);
-    textures.lancer_a = charger_image_transparente("repPartie_r.bmp",renderer,64,124 ,77);
-
-    textures.recommencer = charger_image_transparente("nouvPartie_v.bmp",renderer,64,124 ,77 );
-    textures.recommencer_a = charger_image_transparente("nouvPartie_r.bmp",renderer,64,124 ,77 );
-
-
-    // INitialisations des textures des menus
+    textures.sauv = charger_image_transparente("ressources/sauv_v.bmp",renderer,77, 93, 70);
+    textures.sauv_a = charger_image_transparente("ressources/sauv_r.bmp",renderer,77, 93, 70);
+    textures.reprendre = charger_image_transparente("ressources/reprendre_v.bmp",renderer,77, 93, 70);
+    textures.reprendre_a = charger_image_transparente("ressources/reprendre_r.bmp",renderer,77, 93, 70);
+    textures.pause = charger_image_transparente("ressources/pause.bmp",renderer,255,255,255);
+    textures.lancer = charger_image_transparente("ressources/repPartie_v.bmp",renderer,64,124 ,77);
+    textures.lancer_a = charger_image_transparente("ressources/repPartie_r.bmp",renderer,64,124 ,77);
+    textures.recommencer = charger_image_transparente("ressources/nouvPartie_v.bmp",renderer,64,124 ,77 );
+    textures.recommencer_a = charger_image_transparente("ressources/nouvPartie_r.bmp",renderer,64,124 ,77 );
     world.pause.y = 595;
     world.pause.x = 0 ;
     world.pause.w = 1280 ;
@@ -136,7 +133,7 @@ int main(int argc, char *argv[]){
 
     
 
-
+//_________________________________________________________________________________________________________
 
     // Boucle principale
     while(!world.terminer){
@@ -181,7 +178,7 @@ int main(int argc, char *argv[]){
         SDL_RenderPresent(renderer);
         }
     }
-    enregistre_score("score.txt",&world) ;
+    enregistre_score("sorties/score.txt",&world) ;
     // Libérer de la mémoire
     clean_data(&world,&textures) ;
     SDL_DestroyRenderer(renderer);

@@ -1,6 +1,0 @@
-Pseudo :   
-Levels :   1
-ball_x :   858
-ball_y :   324
-nbCoups:   0
-nbCoupsTot:0

@@ -10,17 +10,7 @@
 #include "graphique.h"
 
 
-// Function to check if the ball needs to bounce off a tile
-bool check_tile_collision(sprite_t ball, sprite_t mur) {
-  // Check if the ball is intersecting the tile
-  if (ball.x + ball.dirX < mur.x + mur.w &&
-      ball.x + ball.dirX + ball.w > mur.x &&
-      ball.dirY + ball.dirY < mur.y + mur.h &&
-      ball.y + ball.dirY + ball.h > mur.y) {
-    return true;
-  }
-  return false;
-}
+
 
 void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
     if (world->status == JOUER)
@@ -97,9 +87,7 @@ void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
 
         }
 
-        //print dirX et dirY
-        //printf("%f\n", world->ball.dirX);
-        //printf("%f\n", world->ball.dirY);
+
 
         if (world->ball.power > 0)
         {
@@ -112,7 +100,7 @@ void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
         }
         if (world->powerPress == 0)
         {
-            world->rect.w = 10 ;
+            world->rect.w = 10 ; // si plus de power la barre indiquant le power reprend sa form initial
         }
     }
 }
@@ -133,12 +121,12 @@ void init_data(world_t* world){
     world->rect.h = 50;
     if (world->init_sauv)
     {
-        lire_sauvgarde(world);
+        lire_sauvgarde(world); // permet d'avoir le niveau actuel utile dans init_data_file
     }
     init_data_file(world);
     if (world->init_sauv)
     {
-         lire_sauv_ball(world);
+         lire_sauv_ball(world); //Dois être faite car initialement la position de la balle est définis dans la fonction init_data_file
     }
     
     
@@ -147,9 +135,8 @@ void init_data(world_t* world){
 
 }
 void next_level(world_t* world,SDL_Renderer *renderer,textures_t* texture){
-    if (world->current_level + 1 > world->nb_niveau)
+    if (world->current_level + 1 > world->nb_niveau) // si il n'y a pas de niveau suivant
     {
-        printf("fin du jeu");
         world->status = FIN ;
     }
     else{
@@ -167,7 +154,7 @@ void init_data_file(world_t* world){
     int col = 0;
     int ligne = 0 ;
     int srcpos = 0 ;
-    sprintf(nomFichier, "hole%d.txt",world->current_level);
+    sprintf(nomFichier, "niveaux/hole%d.txt",world->current_level);
     taille_fichier(nomFichier, &(ligne), &(col)); // Initialisation du nombres de tuile dans le monde
     world->colonne = col ;
     world->ligne = ligne ;
@@ -234,6 +221,7 @@ void int_to_char(char* score_txt,int score){
 		score_txt[2] = '\0';
 	}
 }
+//fonction liberant la mémoire ds textures et liberant la mmoire dynamique
 void clean_data(world_t* world , textures_t* texture){
     SDL_DestroyTexture(texture->arrow);
     SDL_DestroyTexture(texture->back);

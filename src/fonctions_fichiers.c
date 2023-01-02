@@ -144,6 +144,9 @@ char** lire_fichier(const char* nomFichier) {
 
     return tab;
 }
+
+
+//Fonction permettant de remplacer les caracteres d'une chaine de caracteres par des caracteres vides
 void char_array_empty(char* char_array) {
     for (int i = 0; char_array[i] != '\0'; i++) {
         //if (!(char_array[i] >= '0' && char_array[i] <= '9'))
@@ -153,25 +156,25 @@ void char_array_empty(char* char_array) {
         }
     }
 }
-
+/*
+Fonction permettant de lire le fichier de sauvegarde
+*/
 void lire_sauvgarde(world_t* world) {
     int lig = 0;
     int col = 0;
     FILE* fichier = NULL ;
-    fichier = fopen("sauvegarde.txt", "r") ;
+    fichier = fopen("sorties/sauvegarde.txt", "r") ;
 
 
     char* nb_coup= malloc(sizeof(char)*3);
     char* nb_coup_tot= malloc(sizeof(char)*3);
     char* nb_lvl= malloc(sizeof(char)*1);
 
-
+        //Convertion des caracteres présent dans la mémoire en caractere vide
         char_array_empty(nb_coup);
-        printf("\ncouptot") ;
         char_array_empty(nb_coup_tot);
-        printf("\n lvl") ;
-
         char_array_empty(nb_lvl);
+    //parcours du fichier
    int c ;
 
     if (fichier != NULL) {
@@ -207,30 +210,28 @@ void lire_sauvgarde(world_t* world) {
     
 
 
-        printf("\n%s",nb_coup_tot) ;
-        int f = atoi(nb_coup_tot);
-
-        printf("f = %d",f);
+        //Convertions des chaines de caracteres en entier
         world->nbCoups = atoi(nb_coup);
         world->CoupsTot = atoi(nb_coup_tot);
         world->current_level =  atoi(nb_lvl);
-        printf("\n%d",world->CoupsTot) ;
 
-
-
+        //liberation de la memoire
         free(nb_coup);
         free(nb_coup_tot);
         free(nb_lvl);
         fclose(fichier);
     }
 }
+/*
+Fonction permettant de lire le fichier de sauvegarde, notament récuperer les coordonnees de la balle
+*/
 void lire_sauv_ball(world_t* world) {
     int lig = 0;
     int col = 0;
     char* x_ball= malloc(sizeof(char)*5);
     char* y_ball= malloc(sizeof(char)*5);
     FILE* fichier = NULL ;
-    fichier = fopen("sauvegarde.txt", "r") ;
+    fichier = fopen("sorties/sauvegarde.txt", "r") ;
     int c ;
         char_array_empty(x_ball);
         char_array_empty(y_ball);
@@ -266,9 +267,9 @@ void lire_sauv_ball(world_t* world) {
         free(x_ball);
         fclose(fichier);
     }else {
-        printf("fichier introuvable ??????");
+        printf("fichier introuvable ");
     }
-    world->init_sauv = false ;
+    world->init_sauv = false ; // Chargement de la sauvegarde terminer
     
 }
 
@@ -283,20 +284,15 @@ void lire_sauv_ball(world_t* world) {
 
 
 
-
+/*
+Fonction permettant d'enregister le score du joueur dans un fichier texte.
+*/
 void enregistre_score(const char *filename,world_t* world) {
   // Ouvrir le fichier en écriture en fin de fichier
   FILE *file = fopen(filename, "a");
-  if (file == NULL) {
-    // Erreur d'ouverture du fichier
-    perror("fichier introuvable");
-    return;
-  }
 char* ligne = malloc(sizeof(char)*64) ;
 char_array_empty(ligne);
-printf("pseudo %s",world->pseudo);
 sprintf(ligne,"%s%s%d%s",world->pseudo," ",world->CoupsTot,"\n");
-printf("ligne %s",ligne);
 
   // Écrire la ligne dans le fichier
   fprintf(file, ligne);
@@ -443,11 +439,7 @@ void display_arrow(world_t* world){
         //création des coordonées du point b
         int b_x = a_x;
         int b_y = a_x + c; 
-        /*
-        if (*c_y < *a_y){
-            *b_y = DestR_ball->y - c + DestR_ball->h/2;
-        }
-        */
+
         int b = sqrt((b_x -a_x)*(b_x - a_x)  + (b_y - a_y)*(b_y - a_y) );
         int a = sqrt((b_x - posx)*(b_x - posx) + (b_y - posy)*(b_y - posy) );
 
@@ -474,6 +466,9 @@ bool entre(int v1,int v2,int v3){
     
 }
 
+/*
+Fonction de detection de collision entre 2 sprites
+*/
 bool sprites_collide(sprite_t sp2, sprite_t sp1){
 
     if(entre(sp1.x,sp2.x,sp1.x+sp1.w) && entre(sp1.y,sp2.y,sp1.y + sp1.h)){
@@ -493,7 +488,9 @@ bool sprites_collide(sprite_t sp2, sprite_t sp1){
 
     return false;
 }
-
+/*
+Fonction detectant si le pointeur de la souris est en collision avec un sprite
+*/
 bool pointeur_collision(sprite_t sp1){
     int posx = 0 ;
     int posy = 0 ;       
@@ -530,6 +527,9 @@ void enregistrer_world_s(const char *nom_fichier, const struct world_s *world)
     fclose(fichier);
   }
 }
+/*
+Fonction permettant de savoir si un fichier existe
+*/
 bool fichier_exist(const char* nomFichier){
     FILE* fichier = NULL ;
     fichier = fopen(nomFichier, "r") ;  
@@ -544,13 +544,16 @@ bool fichier_exist(const char* nomFichier){
 
     
 }
+/*
+Fonction permettant de connaitre le nombres de niveaux grace aux fichiers hole(num).txt
+*/
 int nombres_niveau(){
     int f  = 1;
     char* nom_niveau = malloc(sizeof(char)*32);
-    sprintf(nom_niveau, "hole1.txt");
+    sprintf(nom_niveau, "niveaux/hole1.txt");
     while(fichier_exist(nom_niveau)){
         f++ ;
-        sprintf(nom_niveau, "hole%d.txt", f);
+        sprintf(nom_niveau, "niveaux/hole%d.txt", f);
     }
     free(nom_niveau);
     return f - 1;

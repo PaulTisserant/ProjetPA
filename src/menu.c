@@ -10,14 +10,14 @@
 
 int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures){
 
-
+    //gestion de la texture du fond en fonction de la page du menu
     if (world->status == LANCEMENT)
     {
        switch (world->page) {
        case INIT:
         if (textures->menu == NULL)
         {
-            textures->menu = charger_image("menu.bmp",renderer);
+            textures->menu = charger_image("ressources/menu.bmp",renderer);
         }
         apply_texture(textures->menu,renderer,0,0,1280,720,0);
 
@@ -25,7 +25,7 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
        case OPTION:
                 if (textures->menu == NULL)
                 {
-                    textures->menu = charger_image("option.bmp",renderer);
+                    textures->menu = charger_image("ressources/option.bmp",renderer);
                 }
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
                 apply_text(renderer,350,350,40*world->nbLettrePseudo,64,world->pseudo,textures->font);
@@ -33,7 +33,7 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
         case LANCE_GAME:
                 if (textures->menu == NULL)
                 {
-                    textures->menu = charger_image("menu_lance.bmp",renderer);
+                    textures->menu = charger_image("ressources/menu_lance.bmp",renderer);
                 }
                 apply_texture(textures->menu,renderer,0,0,1280,720,0);
 
@@ -44,7 +44,7 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 
 
     }
-    
+    //Gestion de la couleur des boutons en fonction de la position du curseur de la souris
     int posx = 0 ;
     int posy = 0 ;       
     SDL_GetMouseState(&posx,&posy); 
@@ -95,6 +95,7 @@ int update_lancement(SDL_Renderer *renderer, world_t *world,textures_t *textures
 }
 
 void gestion_pause(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+    //Gestion de la couleur des boutons en fonction de la position du curseur de la souris
     if(world->status == PAUSE){
         apply_texture(textures->pause,renderer,world->pause.x,world->pause.y,world->pause.w ,world->pause.h,0.0 );
         if(pointeur_collision(world->sauv)){

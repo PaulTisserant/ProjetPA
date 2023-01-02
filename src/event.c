@@ -31,6 +31,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         break; 
 
                         case SDLK_SPACE:
+                            //gestion de la puissance du tir
                             if(world->powerPress < 20) {
                                 world->powerPress ++;
                                 world->rect.w+=5 ;
@@ -48,6 +49,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     switch(evenements->key.keysym.sym) {
 
                         case SDLK_SPACE:
+                            //gestion du tir
                             world->tir = false;
                             world->ball.power = world->powerPress;
                             world->ball.dirX = cos(world->arrow.angle * PI / 180) * world->ball.power;
@@ -91,7 +93,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
 
                     }
                     if(pointeur_collision(world->sauv)){
-                        enregistrer_world_s("Sauvegarde.txt",world);
+                        enregistrer_world_s("sorties/Sauvegarde.txt",world);
                         textures->menu = NULL ;
                         world->status = LANCEMENT ;
                         world->page = INIT ;
@@ -125,6 +127,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         }
                         break;
                         case SDLK_BACKSPACE:
+                            //suprssion du pseudo
                             free(world->pseudo);
                             world->pseudo = malloc(sizeof(char)*32);
                             world->nbLettrePseudo = 0 ;
@@ -137,7 +140,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                         if (world->page == OPTION)
                         {
                             
-                            strcat( world->pseudo,evenements->text.text);
+                            strcat( world->pseudo,evenements->text.text); // concatene le pseudo avec le texte entree par l'utilisateur
                             printf("%s\n", evenements->text.text);
                             world->nbLettrePseudo++ ;
                         }
@@ -148,21 +151,18 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
                     if (evenements->button.button == SDL_BUTTON_LEFT)
                     {
 
-                        int posx_e = 0 ;
-                        int posy_e = 0 ;       
-                        SDL_GetMouseState(&posx_e,&posy_e); 
+
                         if (world->page == INIT)
                         {
-                            if (entre(world->buttons[0].x,posx_e,world->buttons[0].x+world->buttons[0].w) && entre(world->buttons[0].y,posy_e,world->buttons[0].y+world->buttons[0].h)){
+                            if (pointeur_collision(world->buttons[0])){
                                 textures->menu = NULL ;
                                 world->page = LANCE_GAME ;
                             }
-                            if (entre(world->buttons[2].x,posx_e,world->buttons[2].x+world->buttons[2].w) && entre(world->buttons[2].y,posy_e,world->buttons[2].y+world->buttons[2].h)){
+                            if (pointeur_collision(world->buttons[2])){
                             textures->menu = NULL ;
                             world->page = OPTION ;                    
                             }
-                            if (entre(world->buttons[4].x,posx_e,world->buttons[4].x+world->buttons[4].w) && entre(world->buttons[4].y,posy_e,world->buttons[4].y+world->buttons[4].h)){
-                                printf("finn");
+                            if (pointeur_collision(world->buttons[4])){
                                 world->terminer = true ;
                                 world->status = JOUER ;
                             }
@@ -192,6 +192,7 @@ void handle_events(SDL_Event *evenements,world_t *world,textures_t *textures){
             case SDL_KEYDOWN:
                 switch(evenements->key.keysym.sym) {
                     case SDLK_RETURN :
+                    //fin du jeu
                     world->terminer = true ;
                     break;
                 }
