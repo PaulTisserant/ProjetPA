@@ -12,4 +12,4 @@ V1 :
 V2 :
   Fonctionnalités :
     1) Ajout d'une animation a la balle
-    2) Ajout des collision entre la balle et les murs(stocke dans une liste chaînée)
+    2) Ajout des collisions entre la balle et les murs(stocke dans une liste chaînée)
