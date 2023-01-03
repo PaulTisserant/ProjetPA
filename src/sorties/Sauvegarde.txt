@@ -1,6 +1,6 @@
 Pseudo :   
-Levels :   2
-ball_x :   378
-ball_y :   292
-nbCoups:   0
-nbCoupsTot:8
+Levels :   3
+ball_x :   610
+ball_y :   166
+nbCoups:   4
+nbCoupsTot:20

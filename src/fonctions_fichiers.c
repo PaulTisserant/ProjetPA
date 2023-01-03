@@ -163,7 +163,7 @@ void lire_sauvgarde(world_t* world) {
     int lig = 0;
     int col = 0;
     FILE* fichier = NULL ;
-    fichier = fopen("sorties/sauvegarde.txt", "r") ;
+    fichier = fopen("sorties/Sauvegarde.txt", "r") ;
 
 
     char* nb_coup= malloc(sizeof(char)*3);

@@ -176,7 +176,7 @@ int main(int argc, char *argv[]){
   
         SDL_Delay(20);
         SDL_RenderPresent(renderer);
-        }
+        } 
     }
     enregistre_score("sorties/score.txt",&world) ;
     // Libérer de la mémoire
