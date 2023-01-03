@@ -27,24 +27,24 @@ void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
             if(sprites_collide(world->ball, tourMur)){
                 
                 printf("collision");
-                // Calculate the center of the tile
+                // Calcule le centre du mur
                 double tile_centerX = tourMur.x + tourMur.w / 2;
                 double tile_centerY = tourMur.y + tourMur.h / 2;
 
-                // Calculate the center of the ball
+                // Calcule le centre de la balle
                 double ball_centerX = world->ball.x + world->ball.w / 2;
                 double ball_centerY = world->ball.y + world->ball.h / 2;
 
-                // Calculate the normal vector of the tile
+                // Calcul le vecteur normal du mur
                 double normalX = ball_centerX - tile_centerX;
                 double normalY = ball_centerY - tile_centerY;
 
-                // Normalize the normal vector (scale it to a length of 1)
+                // Normalise le vecteur normal (le redimensionne à une longueur de 1)
                 double length = sqrt(normalX * normalX + normalY * normalY);
                 normalX /= length;
                 normalY /= length;
 
-                // Reflect the ball's velocity vector off the normal vector of the tile
+                // redirectionne le vecteur vitesse de la balle sur le vecteur normal du mur
                 double dot_product = world->ball.dirX * normalX + world->ball.dirY * normalY;
 
                 world->ball.dirX = world->ball.dirX - 2 * dot_product * normalX;
@@ -60,24 +60,24 @@ void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
             
             if(sprites_collide(world->ball, mur)){
 
-                // Calculate the center of the tile
+                // Calcule le centre du mur
                 double tile_centerX = mur.x + mur.w / 2;
                 double tile_centerY = mur.y + mur.h / 2;
 
-                // Calculate the center of the ball
+                // Calcul le centre de la balle
                 double ball_centerX = world->ball.x + world->ball.w / 2;
                 double ball_centerY = world->ball.y + world->ball.h / 2;
 
-                // Calculate the normal vector of the tile
+                // Calcul le vecteur normal du mur
                 double normalX = ball_centerX - tile_centerX;
                 double normalY = ball_centerY - tile_centerY;
 
-                // Normalize the normal vector (scale it to a length of 1)
+                // Normalise le vecteur normal (le redimensionne à une longueur de 1)
                 double length = sqrt(normalX * normalX + normalY * normalY);
                 normalX /= length;
                 normalY /= length;
 
-                // Reflect the ball's velocity vector off the normal vector of the tile
+                // redirectionne le vecteur vitesse de la balle sur le vecteur normal du mur
                 double dot_product = world->ball.dirX * normalX + world->ball.dirY * normalY;
 
                 world->ball.dirX = world->ball.dirX - 2 * dot_product * normalX;
@@ -91,6 +91,16 @@ void update_data(world_t* world,SDL_Renderer *renderer,textures_t* texture){
 
         if (world->ball.power > 0)
         {
+            for (int i = 0; i < longueur(world->mur); i++)
+            {
+                sprite_t mur = neme_elem(i,world->mur);
+                if(sprites_collide(world->ball, mur)){
+                    world->ball.x = mur.x + mur.w + 1;
+                    world->ball.y = mur.y + mur.h + 1;
+                    break;
+                }
+            }
+
             world->ball.x += world->ball.dirX;
             world->ball.y += world->ball.dirY;
 
